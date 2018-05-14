@@ -1,11 +1,12 @@
 /* @flow */
-// import DetailsScreen from './DetailScreen';
+import DetailsScreen from './DetailScreen';
 import Home from './Home';
-import { createTabNavigator } from 'react-navigation';
+import { createBottomTabNavigator } from 'react-navigation';
+import './../eth/contract';
 
-export default createTabNavigator({
+export default createBottomTabNavigator({
   Home: Home,
-  // Details: DetailsScreen,
+  Details: DetailsScreen,
 },
 {
     initialRouteName: 'Home',
