@@ -15,16 +15,44 @@ var rawTx = {
   value: '0x00',
   data: data
 }
-var tx = new Tx(rawTx);
-console.log(tx);
-tx.sign(privateKey);
-var serializedTx = tx.serialize();
-console.log(serializedTx);
-web3.eth.sendSignedTransaction('0x'+serializedTx.toString('hex')).on('transactionHash', function(hash){
-    console.log(hash);
-})
-.on('receipt', function(receipt){
-    console.log(receipt);
-})
-// .on('confirmation', function(confirmationNumber, receipt){ console.log(confirmationNumber + '  ' + receipt); })
-.on('error', console.log);
+// var tx = new Tx(rawTx);
+// console.log(tx);
+// tx.sign(privateKey);
+// var serializedTx = tx.serialize();
+// console.log(serializedTx);
+// web3.eth.sendSignedTransaction('0x'+serializedTx.toString('hex')).on('transactionHash', function(hash){
+//     console.log(hash);
+// })
+// .on('receipt', function(receipt){
+//     console.log(receipt);
+// })
+// .on('error', console.log);
+
+getGasLimit = (data, to=CONTRACT_ADDRESS) => {
+  return web3.eth.estimateGas({
+    to: to,
+    data: data,
+  });
+}
+
+
+getGasPrice = () => {
+  return web3.eth.getGasPrice();
+}
+
+generateData = (method, ...params) => {
+  return bopContract.methods[method](...params).encodeABI();
+}
+
+sendTransaction = (rawTx, privateKey) => {
+  var tx = new Tx(rawTx);
+  console.log(tx);
+  tx.sign(privateKey);
+  var serializedTx = tx.serialize();
+  console.log(serializedTx);
+  return web3.eth.sendSignedTransaction('0x'+serializedTx.toString('hex'));
+}
+
+export {
+  generateData,
+}

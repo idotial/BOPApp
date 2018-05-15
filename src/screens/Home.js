@@ -1,11 +1,16 @@
-import React, { Component } from 'react';
+/* @flow */
+import React, {
+  Component
+}
+from 'react';
 import {
   Button,
   Platform,
   StyleSheet,
   Text,
   View
-} from 'react-native';
+}
+from 'react-native';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -15,8 +20,10 @@ const instructions = Platform.select({
 });
 
 type Props = {};
-export default class Home extends Component<Props> {
-  static navigationOptions = ({navigation}) => {
+export default class Home extends Component < Props > {
+  static navigationOptions = ({
+    navigation
+  }) => {
     console.log(navigation);
     return {
       title: 'Home',
@@ -25,31 +32,33 @@ export default class Home extends Component<Props> {
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
-        <Button
-          title="Go to Details"
-          onPress={() => {
-            /* 1. Navigate to the Details route with params */
-            this.props.navigation.navigate('Details', {
-              itemId: 86,
-              otherParam: 'anything you want here',
-            });
-          }}
-        />
-        <Button
-          title="clear data"
-          onPress={() => {
-            storage.remove({
-            	key: 'user',
-            	id: '1001'
-            });
+      <View style ={
+        {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center'
+        }
+      }>
+        <Text> Home Screen </Text> <Button title = "Go to Details"
+          onPress = {
+            () => {
+              /* 1. Navigate to the Details route with params */
+              this.props.navigation.navigate('Details');
+            }
+          }/>
+        <Button title = "clear data"
+          onPress = {
+            () => {
+              storage.remove({
+                key: 'user',
+                id: '1001'
+              });
               this.props.navigation.navigate('AuthLoading');
-            /* 1. Navigate to the Details route with params */
-            // this.props.navigation.navigate('Auth');
-          }}
-        />
-      </View>
+              /* 1. Navigate to the Details route with params */
+              // this.props.navigation.navigate('Auth');
+            }
+          }
+        /> </View>
     );
   }
 }

@@ -2,7 +2,9 @@
 import DetailsScreen from './DetailScreen';
 import Home from './Home';
 import { createBottomTabNavigator } from 'react-navigation';
-import './../eth/contract';
+import { generateData } from './../eth/contract';
+//
+console.log(generateData('test(uint256,uint256,uint256)', 33, 42, 6));
 
 export default createBottomTabNavigator({
   Home: Home,
