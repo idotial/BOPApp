@@ -1,58 +1,51 @@
 /* @flow */
 import {CONTRACT_ABI, CONTRACT_ADDRESS} from './../config/constants/eth';
-console.log(bopContract._address);
-// console.log(crypto);
-var data = bopContract.methods.setuinttttt(2333).encodeABI();
-console.log(data);
 
-var Tx = require('ethereumjs-tx');
-var privateKey = new Buffer('78814d2a155910fe3d968934ee99427a5974bfa666f3a4a822f5300d1af735b6', 'hex')
-var rawTx = {
-  nonce: '0x5',
-  gasPrice: '0x1',
-  gasLimit: '0x16D37',
-  to: bopContract._address,
-  value: '0x00',
-  data: data
-}
-// var tx = new Tx(rawTx);
-// console.log(tx);
-// tx.sign(privateKey);
-// var serializedTx = tx.serialize();
-// console.log(serializedTx);
-// web3.eth.sendSignedTransaction('0x'+serializedTx.toString('hex')).on('transactionHash', function(hash){
-//     console.log(hash);
-// })
-// .on('receipt', function(receipt){
-//     console.log(receipt);
-// })
-// .on('error', console.log);
+export default class TransactionHelper {
+  account: any
+  constructor(pk:string) {
+    console.log('TransactionHandler init');
+    this.account = web3.eth.accounts.privateKeyToAccount(pk);
+    console.log(this.account);
+  }
 
-getGasLimit = (data, to=CONTRACT_ADDRESS) => {
-  return web3.eth.estimateGas({
-    to: to,
-    data: data,
-  });
-}
+  asyncGetNonce = () => { //promise
+    return web3.eth.getTransactionCount(this.account.address);
+  }
 
+  asyncGetGasLimit = (method: string, ...params: [string]) => { //promise
+    BOP_Contract.methods[method](...params).estimateGas().then(result => console.log('gas: ' + result));
+    return BOP_Contract.methods[method](...params).estimateGas();
+  }
 
-getGasPrice = () => {
-  return web3.eth.getGasPrice();
-}
+  asyncGetGasPrice = () => {
+    return web3.eth.getGasPrice();
+  }
 
-generateData = (method, ...params) => {
-  return bopContract.methods[method](...params).encodeABI();
-}
+  generateData = (method: string, ...params) => {
+    console.log('generateData: ' + BOP_Contract.methods[method](...params).encodeABI());
+    return BOP_Contract.methods[method](...params).encodeABI();
+  }
 
-sendTransaction = (rawTx, privateKey) => {
-  var tx = new Tx(rawTx);
-  console.log(tx);
-  tx.sign(privateKey);
-  var serializedTx = tx.serialize();
-  console.log(serializedTx);
-  return web3.eth.sendSignedTransaction('0x'+serializedTx.toString('hex'));
+  asyncGenerateSignedTransaction = (data, gas) => {
+    let rawTx = {
+      to: CONTRACT_ADDRESS,
+      data: data,
+      gas: gas,
+    }
+    console.log('generateTransaction');
+    web3.eth.accounts.signTransaction(rawTx, this.account.privateKey).then(console.log)
+    return web3.eth.accounts.signTransaction(rawTx, this.account.privateKey)
+  }
+
+  _asyncSendTransaction = (tx) => {
+    return web3.eth.sendSignedTransaction(tx);
+  }
 }
 
-export {
-  generateData,
+class CallHelper {
+  from: string
+  constructor(address) {
+    this.from = address
+  }
 }

@@ -1,3 +1,4 @@
+//@flow
 import React from 'react';
 import {
   ActivityIndicator,
@@ -8,19 +9,9 @@ import {
 
 export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
-    console.log('enter authloading');
     super(props);
     this._bootstrapAsync();
   }
-
-  componentWillUnmount(){
-    console.log('AuthLoadingScreen componentWillUnmount');
-  }
-
-  componentDidMount(){
-    console.log('AuthLoadingScreen componentDidMount');
-  }
-
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = () => {
@@ -45,7 +36,7 @@ export default class AuthLoadingScreen extends React.Component {
   render() {
     return (
       <View>
-        <ActivityIndicator />
+        <ActivityIndicator animating={true} size="large"/>
         <StatusBar barStyle="default" />
       </View>
     );

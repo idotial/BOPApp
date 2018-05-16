@@ -1,4 +1,7 @@
-const CONTRACT_ADDRESS = '0x219607bb1b7239eddd7331ce76ab7835718c183a';
+const CONTRACT_ADDRESS = '0x3fb94a0ec59a27f1ad8499a9fe80f286e6bde2ea'
+
+const RPC_PROVIDER = 'HTTP://127.0.0.1:7545'
+
 const CONTRACT_ABI = [
 	{
 		"constant": false,
@@ -359,4 +362,5 @@ const CONTRACT_ABI = [
 export {
 	CONTRACT_ABI,
   CONTRACT_ADDRESS,
+	RPC_PROVIDER,
 }
