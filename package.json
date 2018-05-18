@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "postinstall": "rn-nodeify --install --hack",
+    "postinstall": "rn-nodeify --install --hack && react-native link react-native-keychain",
     "test": "jest"
   },
   "dependencies": {
@@ -27,6 +27,7 @@
     "react": "16.3.1",
     "react-native": "^0.55.4",
     "react-native-crypto": "^2.1.2",
+    "react-native-keychain": "^3.0.0-rc.3",
     "react-native-level-fs": "^3.0.1",
     "react-native-os": "^1.2.1",
     "react-native-randombytes": "^3.1.0",
