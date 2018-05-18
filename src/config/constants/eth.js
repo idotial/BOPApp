@@ -1,338 +1,17 @@
-const CONTRACT_ADDRESS = '0x7c4454976bc69f0dbc0252855f6224ca11da49eb'
+const CONTRACT_ADDRESS = '0x3fb94a0ec59a27f1ad8499a9fe80f286e6bde2ea'
 
 const RPC_PROVIDER = 'HTTP://127.0.0.1:7545'
 
 const CONTRACT_ABI = [
 	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
 		"constant": false,
 		"inputs": [
 			{
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"name": "trend",
-				"type": "uint256"
-			},
-			{
-				"name": "amount",
+				"name": "a",
 				"type": "uint256"
 			}
 		],
-		"name": "bet",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"name": "previousOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipRenounced",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "addr",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "roleName",
-				"type": "string"
-			}
-		],
-		"name": "RoleRemoved",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "addr",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "roleName",
-				"type": "string"
-			}
-		],
-		"name": "RoleAdded",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "from",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "LogWithdraw",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "LogDeposit",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "invitee",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "inviter",
-				"type": "address"
-			}
-		],
-		"name": "LogRegistration",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "dealer",
-				"type": "address"
-			}
-		],
-		"name": "LogCreateItem",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "itemId",
-				"type": "uint256"
-			}
-		],
-		"name": "LogDeleteItem",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "dealer",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "LogDealerRefund",
-		"type": "event"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "player",
-				"type": "address"
-			},
-			{
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"name": "trend",
-				"type": "uint256"
-			},
-			{
-				"name": "betTime",
-				"type": "uint256"
-			},
-			{
-				"name": "priceStart",
-				"type": "uint256"
-			},
-			{
-				"name": "priceEnd",
-				"type": "uint256"
-			}
-		],
-		"name": "betSettle",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "player",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "trend",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "betTime",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "priceStart",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "priceEnd",
-				"type": "uint256"
-			}
-		],
-		"name": "LogBettingSettle",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "dealer",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "item",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "LogInvesting",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"name": "player",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "item",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "trend",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"name": "timestamp",
-				"type": "uint256"
-			}
-		],
-		"name": "LogBetting",
-		"type": "event"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "itemId",
-				"type": "uint256"
-			}
-		],
-		"name": "closeItem",
+		"name": "setuinttttt",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -342,296 +21,33 @@ const CONTRACT_ABI = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "amount",
+				"name": "a",
 				"type": "uint256"
 			},
 			{
-				"name": "contentId",
+				"name": "b",
 				"type": "uint256"
 			},
 			{
-				"name": "raiseReturnRate",
-				"type": "uint256"
-			},
-			{
-				"name": "fallReturnRate",
+				"name": "opcode",
 				"type": "uint256"
 			}
 		],
-		"name": "createItem",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
+		"name": "test",
+		"outputs": [
 			{
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"name": "amount",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "dealerInvest",
-		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "itemId",
-				"type": "uint256"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "dealerRefund",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "itemId",
-				"type": "uint256"
-			}
-		],
-		"name": "deleteItem",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "to",
-				"type": "address"
-			},
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "deposit",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "newbee",
-				"type": "address"
-			},
-			{
-				"name": "inviter",
-				"type": "address"
-			}
-		],
-		"name": "register",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "removeController",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "to",
-				"type": "address"
-			}
-		],
-		"name": "setBOPContractAddress",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "controller",
-				"type": "address"
-			}
-		],
-		"name": "setController",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "fee",
-				"type": "uint256"
-			},
-			{
-				"name": "minimumInvest",
-				"type": "uint256"
-			},
-			{
-				"name": "minimumBet",
-				"type": "uint256"
-			},
-			{
-				"name": "minimumOnItem",
-				"type": "uint256"
-			}
-		],
-		"name": "setGameOption",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "first",
-				"type": "uint16"
-			},
-			{
-				"name": "second",
-				"type": "uint16"
-			}
-		],
-		"name": "setInviteReward",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "rate",
-				"type": "uint16"
-			},
-			{
-				"name": "fee",
-				"type": "uint256"
-			},
-			{
-				"name": "newPlatform",
-				"type": "address"
-			}
-		],
-		"name": "setPlatform",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "ip",
-				"type": "string"
-			}
-		],
-		"name": "setServerIP",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "value",
-				"type": "uint8"
-			}
-		],
-		"name": "setState",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"payable": true,
-		"stateMutability": "payable",
-		"type": "fallback"
 	},
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "balanceAt",
+		"inputs": [],
+		"name": "bt",
 		"outputs": [
 			{
 				"name": "",
@@ -645,11 +61,53 @@ const CONTRACT_ABI = [
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "betFeeRate",
+		"name": "dd",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint16"
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "hh",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "INT256_MAX",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "mm",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
 			}
 		],
 		"payable": false,
@@ -660,29 +118,29 @@ const CONTRACT_ABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "addr",
-				"type": "address"
+				"name": "a",
+				"type": "uint256"
 			},
 			{
-				"name": "roleName",
-				"type": "string"
+				"name": "b",
+				"type": "uint256"
 			}
 		],
-		"name": "checkRole",
-		"outputs": [],
+		"name": "mul",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
 		"constant": true,
-		"inputs": [
-			{
-				"name": "itemId",
-				"type": "uint256"
-			}
-		],
-		"name": "dealerMaxRefundAmount",
+		"inputs": [],
+		"name": "nn",
 		"outputs": [
 			{
 				"name": "",
@@ -697,58 +155,15 @@ const CONTRACT_ABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "itemId",
-				"type": "uint256"
-			}
-		],
-		"name": "getItem",
-		"outputs": [
-			{
-				"name": "isValid",
+				"name": "a",
 				"type": "bool"
 			},
 			{
-				"name": "isOpen",
+				"name": "b",
 				"type": "bool"
-			},
-			{
-				"name": "contentId",
-				"type": "uint256"
-			},
-			{
-				"name": "balance",
-				"type": "uint256"
-			},
-			{
-				"name": "raiseReturn",
-				"type": "uint256"
-			},
-			{
-				"name": "fallReturn",
-				"type": "uint256"
-			},
-			{
-				"name": "owner",
-				"type": "address"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "addr",
-				"type": "address"
-			},
-			{
-				"name": "roleName",
-				"type": "string"
-			}
-		],
-		"name": "hasRole",
+		"name": "test",
 		"outputs": [
 			{
 				"name": "",
@@ -756,87 +171,53 @@ const CONTRACT_ABI = [
 			}
 		],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "inviteRewardForFirst",
+		"inputs": [
+			{
+				"name": "a",
+				"type": "int256"
+			},
+			{
+				"name": "b",
+				"type": "int256"
+			},
+			{
+				"name": "operator",
+				"type": "uint256"
+			}
+		],
+		"name": "test",
 		"outputs": [
 			{
 				"name": "",
-				"type": "uint16"
+				"type": "int256"
 			}
 		],
 		"payable": false,
-		"stateMutability": "view",
+		"stateMutability": "pure",
 		"type": "function"
 	},
 	{
 		"constant": true,
-		"inputs": [],
-		"name": "inviteRewardForSecond",
-		"outputs": [
+		"inputs": [
 			{
-				"name": "",
-				"type": "uint16"
+				"name": "input",
+				"type": "bytes32"
 			}
 		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "owner",
+		"name": "testByte",
 		"outputs": [
 			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "ROLE_CONTROllER",
-		"outputs": [
+				"name": "ist",
+				"type": "bool"
+			},
 			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "serverIP",
-		"outputs": [
-			{
-				"name": "",
-				"type": "string"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [],
-		"name": "state",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint8"
+				"name": "out",
+				"type": "bytes32"
 			}
 		],
 		"payable": false,
@@ -847,15 +228,125 @@ const CONTRACT_ABI = [
 		"constant": true,
 		"inputs": [
 			{
-				"name": "",
+				"name": "a",
 				"type": "uint256"
+			},
+			{
+				"name": "b",
+				"type": "uint256"
+			}
+		],
+		"name": "testint",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			},
+			{
+				"name": "",
+				"type": "bool"
+			},
+			{
+				"name": "",
+				"type": "int256"
+			},
+			{
+				"name": "",
+				"type": "int256"
 			},
 			{
 				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "unsettlePlayersBalanceOfItemWithOption",
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "a",
+				"type": "int256"
+			}
+		],
+		"name": "testIntToUint",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "testIntToUint",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "testuint",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "a",
+				"type": "uint256"
+			}
+		],
+		"name": "testUint",
+		"outputs": [
+			{
+				"name": "",
+				"type": "int256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "pure",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "UINT256_MAX",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "uintreturn",
 		"outputs": [
 			{
 				"name": "",

@@ -1,9 +1,7 @@
 //@flow
 import {
-  StyleSheet,
   View,
   Text,
-  TextInput,
   Button,
 } from 'react-native';
 import React, {Component} from 'react';
@@ -17,16 +15,16 @@ type Props = {
 }
 
 type State = {
-  gasLimit: string,
-  gasPrice: string,
+  gasLimit: number,
+  gasPrice: number,
   data: string,
   tx: Object,
 }
 
 export default class PendingTransaction extends Component<Props, State> {
   state = {
-    gasLimit: '0',
-    gasPrice: '0',
+    gasLimit: 0,
+    gasPrice: 0,
     data: '',
     tx: {},
   }
@@ -37,8 +35,7 @@ export default class PendingTransaction extends Component<Props, State> {
     this.transactionHandler = new TransactionHelper('78814d2a155910fe3d968934ee99427a5974bfa666f3a4a822f5300d1af735b6');
     this.setState({
       data: this.transactionHandler.generateData('setuinttttt', '3414'),
-      gasLimit: (await this.transactionHandler.asyncGetGasLimit('setuinttttt', '3414')).toString(),
-      gasPrice: (await this.transactionHandler.asyncGetGasPrice()).toString(),
+      gasLimit: await this.transactionHandler.asyncGetGasLimit('setuinttttt', '3414'),
     });
 
   }
@@ -58,30 +55,12 @@ export default class PendingTransaction extends Component<Props, State> {
   render(){
     return (
       <View>
-        <Text>gasPrice: </Text>
-        <TextInput style={styles.input} value={this.state.gasLimit} onChangeText={(gasLimit) => this.setState({gasLimit})} />
-
+        <Text><Text>data: </Text>{this.state.data}</Text>
+        <Text><Text>gasLimit: </Text>{this.state.gasLimit}</Text>
+        <Text><Text>data: </Text>{this.state.data}</Text>
         <Button title='generate' onPress={ this._generateTransaction }></Button>
         <Button title='send' onPress={ this.sendPackedTransaction }></Button>
       </View>
-        )
-      }
+    )
+  }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'lightblue'
-  },
-  input:{
-    fontSize: 19,
-    fontWeight: 'bold',
-    width: 150,
-  },
-  validstyle:{
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 0.5,
-  },
-});
