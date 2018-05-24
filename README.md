@@ -1,0 +1,1 @@
+基于react native的一个移动应用框架，使用react navigation做跳转导航，使用了web3与区块链通信。
