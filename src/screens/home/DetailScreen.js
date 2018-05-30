@@ -4,6 +4,7 @@ import {
   Alert,
   Button,
   Text,
+  TextInput,
   View
 } from 'react-native';
 import PendingTransaction from './../../component/PendingTransaction'
@@ -14,7 +15,7 @@ export default class DetailsScreen extends Component {
     this.state = {
       data: '0',
       gaslimit: 0,
-      gasprice: 0,
+      gasprice: '0',
       reulst: null,
     }
   }
@@ -41,7 +42,6 @@ export default class DetailsScreen extends Component {
         <Text>Details Screen</Text>
         <Text>itemId: {JSON.stringify(itemId)}</Text>
         <Text>otherParam: {JSON.stringify(otherParam)}</Text>
-        <PendingTransaction method='createItem' params={['1000','1', '17000', '17000',]} pk='0x96f7a140cad880f2b729d873e85e50a8f345df5fef840a862c4b0f1686cbd6f1' transactionDidSend={() => {Alert.alert('发送成功', '交易发送成功，等待确认')}}></PendingTransaction>
       </View>
     );
   }

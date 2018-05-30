@@ -1,6 +1,7 @@
 /* @flow */
 import DetailsScreen from './home/DetailScreen';
 import Home from './home/Home';
+import UserInfo from './home/UserInfo'
 import { createBottomTabNavigator } from 'react-navigation';
 // import { generateData } from './../eth/contract';
 //
@@ -9,6 +10,7 @@ import { createBottomTabNavigator } from 'react-navigation';
 export default createBottomTabNavigator({
   Home: Home,
   Details: DetailsScreen,
+  UserInfo: UserInfo,
 },
 {
     initialRouteName: 'Home',

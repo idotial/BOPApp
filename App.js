@@ -7,7 +7,7 @@
 import './src/config/storage';
 import './src/config/eth';
 
-import AppStack from './src/screens/AppStack';
+import AppTab from './src/screens/AppTab';
 import AuthSwitch from './src/screens/AuthSwitch';
 import ModalScreen from './src/screens/Modal';
 import React, {Component} from 'react';
@@ -16,7 +16,7 @@ import { createSwitchNavigator } from 'react-navigation';
 const RootStack = createSwitchNavigator(
   {
     Auth: AuthSwitch,
-    App: AppStack,
+    App: AppTab,
     MyModal: ModalScreen,
   },
   {

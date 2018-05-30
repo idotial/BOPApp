@@ -33,6 +33,7 @@ export default class Home extends Component < Props > {
   static navigationOptions = ({
     navigation
   }) => {
+    console.log(navigation);
     return {
       title: 'Home',
     }

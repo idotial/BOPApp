@@ -16,6 +16,7 @@ type Props = {
   method: string,
   params: [string],
   transactionDidSend: Function,
+  transactionDidCancel: Function,
 }
 
 type State = {
@@ -23,6 +24,7 @@ type State = {
   gasPrice: string,
   data: string,
   tx: Object,
+  isLoading: boolean,
 }
 
 export default class PendingTransaction extends Component<Props, State> {
@@ -31,6 +33,7 @@ export default class PendingTransaction extends Component<Props, State> {
     gasPrice: '0',
     data: '',
     tx: {},
+    isLoading: true,
   }
 
   contractHelper:ContractHelper
@@ -44,30 +47,53 @@ export default class PendingTransaction extends Component<Props, State> {
       gasPrice: (await this.contractHelper.asyncGetGasPrice()).toString(),
       data: this.contractHelper.generateData(this.props.method, ...this.props.params),
     });
-    await this._generateTransaction()
     console.log(this.state);
+    this.setState({isLoading: false})
+    // this.loadingIndicator.animating = false
   }
 
   _generateTransaction = async() => {
-    this.setState({tx: await this.contractHelper.asyncGenerateSignedTransaction(this.state.data, this.state.gasLimit)})
+    this.setState({tx: await this.contractHelper.asyncGenerateSignedTransaction(this.state.data, this.state.gasLimit, this.state.gasPrice)})
 
     // this.contractHelper._asyncSendTransaction(this.state.data);
   }
 
   sendPackedTransaction = async() => {
     console.log('start');
-    this.contractHelper.asyncSendTransaction(this.state.tx.rawTransaction).then(console.log).catch(console.log)
+    await this._generateTransaction()
+    this.contractHelper.asyncSendTransaction(this.state.tx.rawTransaction).then(this.props.transactionDidSend).catch(console.log)
     console.log('done');
   }
 
   render(){
     return (
       <View>
-        <Text>gasPrice: </Text>
-        <TextInput style={styles.input} value={this.state.gasLimit} onChangeText={(gasLimit) => this.setState({gasLimit})} />
-        <ActivityIndicator size="large" color="#f7040b" />
-        <Button title='generate' onPress={ this._generateTransaction }></Button>
-        <Button title='send' onPress={ this.sendPackedTransaction }></Button>
+        <View style={styles.field}>
+          <Text style={styles.label}>from</Text>
+          <Text
+            style={styles.label}
+            value={this.contractHelper.account.address} />
+        </View>
+        <View style={styles.field}>
+          <Text style={styles.label}>GasPrice</Text>
+          <TextInput
+            style={styles.input}
+            value={this.state.gasPrice}
+            onChangeText={(gasPrice) => this.setState({gasPrice})} />
+        </View>
+        <View style={styles.field}>
+          <Text style={styles.label}>GasLimit</Text>
+          <TextInput
+            style={styles.input}
+            value={this.state.gasLimit}
+            onChangeText={(gasLimit) => this.setState({gasLimit})} />
+        </View>
+        <ActivityIndicator animating={this.state.isLoading} size="large" color="#f7040b" />
+        <View style={styles.buttonsView}>
+          <Button title='send' onPress={ this.sendPackedTransaction } disabled={this.state.isLoading} />
+          <Button title='cancel' onPress={ this.props.transactionDidCancel} disabled={this.state.isLoading} />
+        </View>
+
       </View>
         )
       }
@@ -79,14 +105,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'lightblue'
   },
-  input:{
-    fontSize: 19,
-    fontWeight: 'bold',
-    width: 150,
+  field: {
+    marginVertical: 5,
+  },
+  label: {
+    fontWeight: '500',
+    fontSize: 15,
+    marginBottom: 5,
+  },
+  input: {
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: '#ccc',
+    backgroundColor: 'white',
+    height: 32,
+    fontSize: 14,
+    padding: 8,
   },
   validstyle:{
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 0.5,
+  },
+  buttonsView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
 });

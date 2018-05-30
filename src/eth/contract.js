@@ -25,10 +25,11 @@ export default class ContractHelper {
     return BOP_Contract.methods[method](...params).encodeABI();
   }
 
-  asyncGenerateSignedTransaction = (data: string, gas: string) => {
+  asyncGenerateSignedTransaction = (data: string, gas: string, gasPrice :string) => {
     let rawTx = {
       to: CONTRACT_ADDRESS,
       data: data,
+      gasPrice: gasPrice,
       gas: gas,
     }
     console.log('generateTransaction');
