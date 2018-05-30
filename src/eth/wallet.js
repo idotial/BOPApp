@@ -1,4 +1,4 @@
-
+import web3 from './../config/eth'
 
 createAccountInRandomBuffer = (password: string) => {
     let account = web3.eth.accounts.create(web3.utils.randomHex(32));

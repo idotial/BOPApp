@@ -40,7 +40,7 @@
     "string_decoder": "^0.10.31",
     "timers-browserify": "^1.4.2",
     "tty-browserify": "0.0.0",
-    "url": "^0.10.3",
+    "url": "^0.11.0",
     "util": "^0.10.3",
     "vm-browserify": "0.0.4",
     "web3": "^1.0.0-beta.34"
@@ -51,7 +51,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react-native": "4.0.0",
-    "flow-bin": "^0.72.0",
+    "flow-bin": "^0.73.0",
     "jest": "22.4.3",
     "react-test-renderer": "16.3.1",
     "rn-nodeify": "^10.0.0"

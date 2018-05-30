@@ -8,19 +8,9 @@ import {
 
 export default class LoginSuccessScreen extends React.Component {
   constructor(props) {
-    console.log('enter LoginSuccessScreen');
     super(props);
     this._bootstrap();
   }
-
-  componentWillUnmount(){
-    console.log('LoginSuccessScreen componentWillUnmount');
-  }
-
-  componentDidMount(){
-    console.log('LoginSuccessScreen componentDidMount');
-  }
-
 
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrap = () => {

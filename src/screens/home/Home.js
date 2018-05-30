@@ -23,8 +23,6 @@ const instructions = Platform.select({
 
 type Props = {};
 
-console.log(BOP_Contract);
-
 type State = {
   password: string,
   address: string,
