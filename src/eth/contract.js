@@ -2,12 +2,16 @@
 import {CONTRACT_ABI, CONTRACT_ADDRESS} from './../config/constants/eth';
 import {web3, BOP_Contract} from './../config/eth'
 
-export default class ContractHelper {
+class ContractHelper {
   account = {}
-  constructor(pk:string) {
-    console.log('TransactionHandler init');
-    this.account = web3.eth.accounts.privateKeyToAccount(pk);
-    console.log(this.account);
+  switchAccount(pk:string) {
+    if (pk) {
+      console.log('TransactionHandler init');
+      this.account = web3.eth.accounts.privateKeyToAccount(pk);
+      console.log(this.account);
+    } else {
+      this.account = {}
+    }
   }
 
   asyncGetGasLimit = (method: string, ...params: [string]) => { //promise
@@ -49,3 +53,5 @@ export default class ContractHelper {
     })
   }
 }
+
+export const contractHelper = new ContractHelper()

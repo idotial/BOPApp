@@ -12,7 +12,8 @@ import {
   View,
 }
 from 'react-native';
-import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
+import * as Keychain from 'react-native-keychain'
+// import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -33,7 +34,7 @@ export default class Home extends Component < Props > {
   static navigationOptions = ({
     navigation
   }) => {
-    console.log(navigation);
+    // console.log(navigation);
     return {
       title: 'Home',
     }
@@ -59,45 +60,15 @@ export default class Home extends Component < Props > {
           onPress = {
             () => {
               storage.remove({
-                key: 'user',
-                id: '1001'
+                key: 'currentUser',
               });
+              Keychain.resetInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5')
               this.props.navigation.navigate('AuthLoading');
               /* 1. Navigate to the Details route with params */
               // this.props.navigation.navigate('Auth');
             }
           }
         />
-        <Button title = "create account"
-          onPress = {
-            () => {this.setState({address: createAccountInRandomBuffer(this.state.password)})
-            }
-          }
-        />
-        <Button title = "get account"
-          onPress = {
-            () => {
-              storage.load({
-                key: 'eth.account',
-                id: this.state.address,
-              }).then(ret => {
-                console.log(ret);
-                console.log(web3.eth.accounts.decrypt(ret, this.state.password));
-              })
-            }
-              /* 1. Navigate to the Details route with params */
-              // this.props.navigation.navigate('Auth');
-          }
-        />
-
-        <TextInput style={styles.edit} value={this.state.address} />
-        <TextInput style={styles.edit} value={this.state.password} onChangeText={(password) => this.setState({password})} />
-        <Button
-          title='getpk'
-          onPress={async() => {
-            console.log(await getPrivateKey(this.state.address, this.state.password));
-          }}/>
-
       </View>
     );
   }

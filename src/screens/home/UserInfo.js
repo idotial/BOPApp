@@ -1,8 +1,36 @@
 /* @flow */
 import React, {Component} from 'react'
-import { StyleSheet, Button, Image, Text, View } from 'react-native';
+import {
+  StyleSheet,
+  Button,
+  Image,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+import { wallet } from './../../eth/wallet'
 
-export default class UserInfo extends Component {
+type Props = {};
+
+type State = {
+  input: string
+}
+
+export default class UserInfo extends Component<Props, State> {
+  state = {
+    input: '',
+  }
+
+  generateMnemonic = () => {
+    var newAcoutn = wallet.createAccountWithMnemonic()
+    console.log(newAcoutn);
+    this.setState({input: newAcoutn.mnemonic})
+  }
+
+  fromMnemonic = () => {
+    console.log(wallet.importAccountFromMnemonic(this.state.input));
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -11,6 +39,13 @@ export default class UserInfo extends Component {
             {/* <Image style={styles.logo} source={aboutLogo} /> */}
             <Text style={styles.title}>BOP</Text>
             <Text style={styles.subtitle}>让生活更精彩</Text>
+            <TextInput value={this.state.input} onChange={(input) => {this.setState(input)}}/>
+            <View style={styles.buttons}>
+              <Button
+                title='generateMnemonic'
+                onPress={this.fromMnemonic}
+              />
+            </View>
           </View>
           <View style={styles.bottomContainer}>
             <View style={styles.disclaimerContent}>
@@ -20,6 +55,7 @@ export default class UserInfo extends Component {
               <Button
                 style={[styles.disclaimer, { color: '#3e9ce9' }]}
                 title='导入账号'
+                onPress={this.generateMnemonic}
               />
             </View>
           </View>
@@ -75,5 +111,10 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     alignItems: 'center'
-  }
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
 });

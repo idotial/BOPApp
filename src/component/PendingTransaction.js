@@ -1,5 +1,6 @@
 //@flow
 import {
+  Alert,
   ActivityIndicator,
   StyleSheet,
   View,
@@ -8,7 +9,7 @@ import {
   Button,
 } from 'react-native';
 import React, {Component} from 'react';
-import ContractHelper from './../eth/contract'
+import {contractHelper} from './../eth/contract'
 
 type Props = {
   // coinbase: string,
@@ -35,17 +36,20 @@ export default class PendingTransaction extends Component<Props, State> {
     tx: {},
     isLoading: true,
   }
-
-  contractHelper:ContractHelper
+  switchAccount = (pk:string) => {
+    contractHelper.switchAccount(pk)
+  }
 
   componentDidMount = async() => {
     console.log(require('util').inspect(this.props));
-    this.contractHelper = new ContractHelper(this.props.pk);
+    if (!contractHelper.account.address) {
+      Alert.alert('缺少账号信息', '请先导入keystone, 否则无法交易')
+    }
     this.setState({
       //
-      gasLimit: (await this.contractHelper.asyncGetGasLimit(this.props.method, ...this.props.params)).toString(),
-      gasPrice: (await this.contractHelper.asyncGetGasPrice()).toString(),
-      data: this.contractHelper.generateData(this.props.method, ...this.props.params),
+      gasLimit: (await contractHelper.asyncGetGasLimit(this.props.method, ...this.props.params)).toString(),
+      gasPrice: (await contractHelper.asyncGetGasPrice()).toString(),
+      data: contractHelper.generateData(this.props.method, ...this.props.params),
     });
     console.log(this.state);
     this.setState({isLoading: false})
@@ -53,7 +57,7 @@ export default class PendingTransaction extends Component<Props, State> {
   }
 
   _generateTransaction = async() => {
-    this.setState({tx: await this.contractHelper.asyncGenerateSignedTransaction(this.state.data, this.state.gasLimit, this.state.gasPrice)})
+    this.setState({tx: await contractHelper.asyncGenerateSignedTransaction(this.state.data, this.state.gasLimit, this.state.gasPrice)})
 
     // this.contractHelper._asyncSendTransaction(this.state.data);
   }
@@ -61,7 +65,7 @@ export default class PendingTransaction extends Component<Props, State> {
   sendPackedTransaction = async() => {
     console.log('start');
     await this._generateTransaction()
-    this.contractHelper.asyncSendTransaction(this.state.tx.rawTransaction).then(this.props.transactionDidSend).catch(console.log)
+    contractHelper.asyncSendTransaction(this.state.tx.rawTransaction).then(this.props.transactionDidSend).catch(console.log)
     console.log('done');
   }
 
@@ -72,7 +76,7 @@ export default class PendingTransaction extends Component<Props, State> {
           <Text style={styles.label}>from</Text>
           <Text
             style={styles.label}
-            value={this.contractHelper.account.address} />
+            value={contractHelper.account.address} />
         </View>
         <View style={styles.field}>
           <Text style={styles.label}>GasPrice</Text>
