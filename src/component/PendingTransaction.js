@@ -2,6 +2,7 @@
 import {
   Alert,
   ActivityIndicator,
+  Modal,
   StyleSheet,
   View,
   Text,
@@ -9,7 +10,7 @@ import {
   Button,
 } from 'react-native';
 import React, {Component} from 'react';
-import {contractHelper} from './../eth/contract'
+import { contractHelper } from './../eth/contract'
 
 type Props = {
   // coinbase: string,
@@ -28,7 +29,7 @@ type State = {
   isLoading: boolean,
 }
 
-export default class PendingTransaction extends Component<Props, State> {
+export default class PendingTransaction extends Modal<Props, State> {
   state = {
     gasLimit: '0',
     gasPrice: '0',

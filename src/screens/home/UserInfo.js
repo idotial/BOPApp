@@ -4,31 +4,45 @@ import {
   StyleSheet,
   Button,
   Image,
+  Modal,
+  Picker,
   Text,
   TextInput,
+  TouchableHighlight,
   View,
 } from 'react-native';
+import {wordlists} from 'bip39';
 import { wallet } from './../../eth/wallet'
 
 type Props = {};
-
+var { ...lt } = wordlists
+console.log(lt);
 type State = {
-  input: string
+  input: string,
+  language:string,
+  modalVisible: boolean,
 }
 
 export default class UserInfo extends Component<Props, State> {
   state = {
     input: '',
+    language: 'english',
+    modalVisible: false,
   }
 
   generateMnemonic = () => {
-    var newAcoutn = wallet.createAccountWithMnemonic()
+    var newAcoutn = wallet.createAccountWithMnemonic(this.state.language)
     console.log(newAcoutn);
     this.setState({input: newAcoutn.mnemonic})
   }
 
   fromMnemonic = () => {
-    console.log(wallet.importAccountFromMnemonic(this.state.input));
+    console.log(wallet.importAccountFromMnemonic(this.state.input, this.state.language));
+  }
+
+  fromKeystore = (keystore: string, password: string) => {
+    wallet.switchAccount(keystore, password)
+    console.log(wallet.switchAccount(keystore, password));
   }
 
   render() {
@@ -42,11 +56,44 @@ export default class UserInfo extends Component<Props, State> {
             <TextInput value={this.state.input} onChange={(input) => {this.setState(input)}}/>
             <View style={styles.buttons}>
               <Button
-                title='generateMnemonic'
+                title='助记词导入账号'
                 onPress={this.fromMnemonic}
               />
             </View>
+            <View style={styles.buttons}>
+              <Button
+                title='keystore导入账号'
+                onPress={this.fromMnemonic}
+              />
+            </View>
+            <TextInput value={this.state.language} onChange={(language) => {this.setState(language)}}/>
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={this.state.modalVisible}
+            >
+              <View style={{marginTop: 22}}>
+                <View>
+                  <Text>Hello World!</Text>
+
+                  <TouchableHighlight
+                    onPress={() => {
+                      this.setState({modalVisible: !this.state.modalVisible});
+                    }}>
+                    <Text>Hide Modal</Text>
+                  </TouchableHighlight>
+                </View>
+              </View>
+            </Modal>
+
+            <TouchableHighlight
+              onPress={() => {
+                this.setState({modalVisible: true});
+              }}>
+              <Text>Show Modal</Text>
+            </TouchableHighlight>
           </View>
+
           <View style={styles.bottomContainer}>
             <View style={styles.disclaimerContent}>
               <Text style={[styles.disclaimer, { color: '#999999' }]}>
@@ -54,7 +101,7 @@ export default class UserInfo extends Component<Props, State> {
               </Text>
               <Button
                 style={[styles.disclaimer, { color: '#3e9ce9' }]}
-                title='导入账号'
+                title='创建新账号'
                 onPress={this.generateMnemonic}
               />
             </View>

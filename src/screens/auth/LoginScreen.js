@@ -1,39 +1,73 @@
+//@flow
 import React, {Component} from 'react';
 import {
   View,
   Button,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import {wallet} from './../../eth/wallet'
 import * as Keychain from 'react-native-keychain'
 
-export default class LoginScreen extends React.Component {
+type Props = {}
+
+type State = {
+  currentAddr: string,
+  pwd: string,
+  loginable: boolean,
+}
+
+export default class LoginScreen extends React.Component<Props, State> {
   static navigationOptions = {
     title: 'Please sign in',
   };
 
+  state = {
+    currentAddr: '',
+    pwd: '',
+    loginable: true,
+  }
+
+  componentDidMount = async () => {
+    try {
+      this.state.currentAddr = (await storage.load({
+        key: 'currentUser',
+        autoSync: false,
+      })).address
+    } catch (e) {
+      this.state.loginable = false
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
-        <Button title="Sign in!" onPress={this._signInAsync} />
+        <TextInput value={this.state.pwd} onChange={(pwd) => {this.setState(pwd)}} />
+        <Button title="Sign in!" disabled={!this.state.loginable} onPress={this._signInAsync} />
+        <Button title="Regist!" onPress={this._registAsync} />
       </View>
     );
   }
 
   _signInAsync = async () => {
-    await storage.save({
-	       key: 'currentUser',	  // Note: Do not use underscore("_") in id!
-	       data: {
-           address: '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5',
-         },
-	       expires: 1000 * 900
-      });
-    var keystone = JSON.stringify(wallet.generateKeystore('0xa1e95324f2284a1a944ebd0f49cd1aa8d4931f2e19ef51effe83e3c36d63001c', '123456'))
-    console.log(keystone);
-    await Keychain.setInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', keystone, {accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE})
-    this.props.navigation.navigate('AuthLoading');
+    if (this.state.currentAddr) {
+      // var keystone = JSON.stringify(wallet.generateKeystore('0xa1e95324f2284a1a944ebd0f49cd1aa8d4931f2e19ef51effe83e3c36d63001c', '123456'))
+      // console.log(keystone);
+      // await Keychain.setInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', keystone, {accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE})
+      var keystore = await Keychain.getInternetCredentials('BOP.account.'+this.state.currentAddr)
+      wallet.switchAccount(keystore, this.state.pwd)
+      this.props.navigation.navigate('AuthLoading');
+    }
+
   };
+
+  _registAsync = async () => {
+    
+  }
+
 }
+
+
 
 const styles = StyleSheet.create({
   container:{
