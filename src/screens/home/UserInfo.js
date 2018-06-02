@@ -40,11 +40,6 @@ export default class UserInfo extends Component<Props, State> {
     console.log(wallet.importAccountFromMnemonic(this.state.input, this.state.language));
   }
 
-  fromKeystore = (keystore: string, password: string) => {
-    wallet.switchAccount(keystore, password)
-    console.log(wallet.switchAccount(keystore, password));
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -52,7 +47,7 @@ export default class UserInfo extends Component<Props, State> {
           <View style={styles.center}>
             {/* <Image style={styles.logo} source={aboutLogo} /> */}
             <Text style={styles.title}>BOP</Text>
-            <Text style={styles.subtitle}>让生活更精彩</Text>
+            <Text style={styles.subtitle}>{wallet.account.address}</Text>
             <TextInput value={this.state.input} onChange={(input) => {this.setState(input)}}/>
             <View style={styles.buttons}>
               <Button

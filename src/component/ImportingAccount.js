@@ -19,14 +19,16 @@ type Props = {
 type State = {
   importType:string,
   password: string,
-  data:string,
+  importData:string,
+  test: string,
 }
 
 export default class ImportAccount extends Component<Props, State> {
   state = {
-    importType: '0',
-    password: '341314341241234',
-    data: 'wwwww',
+    importType: 'mnemonic',
+    password: '',
+    importData: '',
+    test: '',
   }
 
   componentDidMount = () => {
@@ -37,13 +39,29 @@ export default class ImportAccount extends Component<Props, State> {
     console.log('ImportAccountModal componentWillUnmount');
   }
 
+  _importingAccount = () => {
+    var newKeystore = ''
+    switch (this.state.importType) {
+      case 'keystore':
+        wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
+        newKeystore = this.state.importData
+        break;
+      case 'privateKey':
+        newKeystore = wallet.importAccountFromPrivateKey(this.state.importData, this.state.password)
+        break;
+      default:
+        newKeystore = wallet.importAccountFromMnemonic(this.state.importData, this.state.password)
+    }
+    this.props.importDidSuccess(newKeystore)
+  }
+
   importTypeString = () => {
     var typeName = ''
     switch (this.state.importType) {
-      case '1':
+      case 'keystore':
         typeName = 'keystore导入'
         break;
-      case '2':
+      case 'privateKey':
         typeName = '私钥导入'
         break;
       default:
@@ -52,25 +70,36 @@ export default class ImportAccount extends Component<Props, State> {
     return typeName
   }
 
+  _finishEntering = (event: Object) => {
+    var pressedKey = event.nativeEvent.key
+    if (pressedKey == 'Enter') {
+      this._importingAccount()
+    }
+  }
+
   render() {
     return (
         <View style={styles.container}>
           <View>
-            <TextInput style={styles.title} pw={this.state.importType} value={this.importTypeString()} />
-            <TextInput multiline={true} value={this.state.password} onChangeText={(password) => {this.setState(password)}} />
-            <TextInput multiline={true} value={this.state.data} onChangeText={(data) => {this.setState(data)}} />
+            <TextInput style={styles.title} value={this.importTypeString()} />
+            <TextInput style={styles.title} value={this.state.test} />
+            <TextInput autoCorrect={false} placeholder={'请输入密码'} value={this.state.password} onChangeText={(password) => {this.setState({password})}} />
+            <TextInput autoCorrect={false} onKeyPress={this._finishEntering} returnKeyType='go' placeholder={'请输入'+this.state.importType} multiline={true} value={this.state.importData} onChangeText={(importData) => {this.setState({importData})}} />
             <Picker
               selectedValue={this.state.importType}
-              style={{ height: 50}}
-              onValueChange={(itemValue, itemIndex) => this.setState({importType: itemValue})}>
-              <Picker.Item label="助记词导入" value="0" />
-              <Picker.Item label="keystore导入" value='1' />
-              <Picker.Item label="私钥导入" value="2" />
+              style={{ height: 40}}
+              onValueChange={(itemValue, itemIndex) => {
+                this.setState({importType: itemValue})
+                this.state.importData = ''
+              }}>
+              <Picker.Item label="助记词导入" value="mnemonic" />
+              <Picker.Item label="keystore导入" value='keystore' />
+              <Picker.Item label="私钥导入" value="privateKey" />
             </Picker>
           </View>
 
           <View style={styles.buttons}>
-            <Button title='确认' onPress={this.props.importDidSuccess} />
+            <Button title='确认' onPress={this._importingAccount} />
             <Button title='取消' onPress={this.props.importCancel} />
           </View>
         </View>
@@ -91,7 +120,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     textAlign: 'center',
     color: '#313131',
-    marginTop: 10
+    marginTop: 30,
   },
   buttons: {
     flexDirection: 'row',

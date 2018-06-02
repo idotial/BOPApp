@@ -12,7 +12,9 @@ import {
   View,
 }
 from 'react-native';
+import {storage} from '../../config/storage';
 import * as Keychain from 'react-native-keychain'
+import {wallet} from '../../eth/wallet';
 // import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
 
 const instructions = Platform.select({
@@ -62,7 +64,7 @@ export default class Home extends Component < Props > {
               storage.remove({
                 key: 'currentUser',
               });
-              Keychain.resetInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5')
+              Keychain.resetInternetCredentials('BOP.account.' + wallet.account.address)
               this.props.navigation.navigate('AuthLoading');
               /* 1. Navigate to the Details route with params */
               // this.props.navigation.navigate('Auth');

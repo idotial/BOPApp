@@ -29,4 +29,6 @@ var storage = new Storage({
 // for web
 // window.storage = storage;
 // for react native
-global.storage = storage;
+export {
+	storage
+}

@@ -48,9 +48,9 @@ export default class PendingTransaction extends Modal<Props, State> {
     }
     this.setState({
       //
-      gasLimit: (await contractHelper.asyncGetGasLimit(this.props.method, ...this.props.params)).toString(),
+      gasLimit: (await contractHelper.asyncGetGasLimit(this.props.method, this.props.params)).toString(),
       gasPrice: (await contractHelper.asyncGetGasPrice()).toString(),
-      data: contractHelper.generateData(this.props.method, ...this.props.params),
+      data: contractHelper.generateData(this.props.method, this.props.params),
     });
     console.log(this.state);
     this.setState({isLoading: false})
