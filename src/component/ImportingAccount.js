@@ -44,7 +44,7 @@ export default class ImportAccount extends Component<Props, State> {
     switch (this.state.importType) {
       case 'keystore':
         wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
-        newKeystore = this.state.importData
+        newKeystore = JSON.parse(this.state.importData)
         break;
       case 'privateKey':
         newKeystore = wallet.importAccountFromPrivateKey(this.state.importData, this.state.password)
