@@ -2,12 +2,14 @@
 import React from 'react';
 import {
   ActivityIndicator,
+  Alert,
   StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
-import {wallet} from '../../eth/wallet';
-import {storage} from '../../config/storage';
+import { wallet } from '../../eth/wallet';
+import { SERVER_ADDRESS } from '../../config/constants/config';
+import { storage } from '../../config/storage';
 import * as Keychain from 'react-native-keychain';
 
 export default class AuthLoadingScreen extends React.Component {
@@ -18,7 +20,17 @@ export default class AuthLoadingScreen extends React.Component {
 
   _bootstrapAsync = async() => {
      if (wallet.isAlive()) {
-       this.props.navigation.navigate('LoginSuccess');
+       try {
+         // var nonce = await fetch(SERVER_ADDRESS, {credentials: 'include'}).toString()
+         // await fetch(SERVER_ADDRESS, {
+         //   credentials: 'include',
+         //   method: 'POST',
+         //   body: JSON.stringify(wallet.signData(nonce))
+         this.props.navigation.navigate('LoginSuccess');
+       } catch (e) {
+         Alert.alert('服务器验证失败', e)
+         this.props.navigation.navigate('Login')
+       }
      } else {
        try {
          await storage.load({

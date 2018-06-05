@@ -58,6 +58,11 @@ class Wallet {
     this.account = web3.eth.accounts.privateKeyToAccount(privateKey)
     return this._generateKeystore(password)
   }
+
+  signData = (data: string) => {
+    return this.account.sign(data)
+  }
+
 }
 const wallet = new Wallet()
 export {

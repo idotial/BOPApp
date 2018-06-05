@@ -13,6 +13,7 @@ import {
 }
 from 'react-native';
 import {storage} from '../../config/storage';
+import { SERVER_ADDRESS } from '../../config/constants/config';
 import * as Keychain from 'react-native-keychain'
 import {wallet} from '../../eth/wallet';
 // import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
@@ -48,16 +49,23 @@ export default class Home extends Component < Props > {
     memric: '',
   }
 
+  sendRequest = async() => {
+    var response = await fetch(SERVER_ADDRESS, {credentials: 'include'})
+    console.log(response);
+  }
+
+  getcookie = async() => {
+    var response = await fetch(SERVER_ADDRESS+'/users', {credentials: 'include'})
+    console.log(response);
+  }
+
   render() {
     return (
       <View style ={styles.container}>
-        <Button title = "Go to Details"
-          onPress = {
-            () => {
-              /* 1. Navigate to the Details route with params */
-              this.props.navigation.navigate('Details');
-            }
-          }/>
+        <Button title = "login"
+          onPress = {this.getcookie}/>
+        <Button title = "send"
+          onPress = {this.sendRequest}/>
         <Button title = "clear data"
           onPress = {
             () => {

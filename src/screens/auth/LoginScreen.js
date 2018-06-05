@@ -63,7 +63,7 @@ export default class LoginScreen extends React.Component<Props, State> {
       if (!keystore) {
         Alert.alert('登录失败', 'keystore不存在')
       }
-      wallet.importAccountFromKeyStore(keystore, this.state.pwd)
+      await wallet.importAccountFromKeyStore(keystore, this.state.pwd)
       this.props.navigation.navigate('AuthLoading');
     }
 

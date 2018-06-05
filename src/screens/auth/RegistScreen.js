@@ -27,7 +27,6 @@ export default class RegistScreen extends React.Component<Prop, State> {
   }
 
   _showImportModal = () => {
-    console.log(wallet.createAccountWithMnemonic('1234567'));
     this.setState({modalState: 1})
   }
 

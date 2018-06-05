@@ -85,7 +85,7 @@ export default class ImportAccount extends Component<Props, State> {
             <TextInput style={styles.title} value={this.importTypeString()} />
             <TextInput style={styles.title} value={this.state.test} />
             <TextInput autoCorrect={false} placeholder={'请输入密码'} value={this.state.password} onChangeText={(password) => {this.setState({password})}} />
-            <TextInput autoCorrect={false} onKeyPress={this._finishEntering} returnKeyType='go' placeholder={'请输入'+this.state.importType} multiline={true} value={this.state.importData} onChangeText={(importData) => {this.setState({importData})}} />
+            <TextInput autoCorrect={false} onKeyPress={this._finishEntering} returnKeyType='go' placeholder={'请输入'+this.state.importType} value={this.state.importData} onChangeText={(importData) => {this.setState({importData})}} />
             <Picker
               selectedValue={this.state.importType}
               style={{ height: 40}}
