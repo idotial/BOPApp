@@ -49,44 +49,7 @@ export default class UserInfo extends Component<Props, State> {
             <Text style={styles.title}>BOP</Text>
             <Text style={styles.subtitle}>{wallet.account.address}</Text>
             <TextInput value={this.state.input} onChange={(input) => {this.setState(input)}}/>
-            <View style={styles.buttons}>
-              <Button
-                title='助记词导入账号'
-                onPress={this.fromMnemonic}
-              />
-            </View>
-            <View style={styles.buttons}>
-              <Button
-                title='keystore导入账号'
-                onPress={this.fromMnemonic}
-              />
-            </View>
             <TextInput value={this.state.language} onChange={(language) => {this.setState(language)}}/>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={this.state.modalVisible}
-            >
-              <View style={{marginTop: 22}}>
-                <View>
-                  <Text>Hello World!</Text>
-
-                  <TouchableHighlight
-                    onPress={() => {
-                      this.setState({modalVisible: !this.state.modalVisible});
-                    }}>
-                    <Text>Hide Modal</Text>
-                  </TouchableHighlight>
-                </View>
-              </View>
-            </Modal>
-
-            <TouchableHighlight
-              onPress={() => {
-                this.setState({modalVisible: true});
-              }}>
-              <Text>Show Modal</Text>
-            </TouchableHighlight>
           </View>
 
           <View style={styles.bottomContainer}>

@@ -1,6 +1,7 @@
 //@flow
 import React, {Component} from 'react';
 import {
+  Alert,
   View,
   Button,
   StyleSheet,
@@ -59,6 +60,9 @@ export default class LoginScreen extends React.Component<Props, State> {
       // console.log(keystone);
       // await Keychain.setInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', keystone, {accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE})
       var keystore = (await Keychain.getInternetCredentials('BOP.account.'+this.state.currentAddr)).password
+      if (!keystore) {
+        Alert.alert('登录失败', 'keystore不存在')
+      }
       wallet.importAccountFromKeyStore(keystore, this.state.pwd)
       this.props.navigation.navigate('AuthLoading');
     }

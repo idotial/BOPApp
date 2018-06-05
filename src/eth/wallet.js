@@ -6,6 +6,8 @@ import HDKey from 'hdkey'
 type Account = {
   address: string,
   privateKey: string,
+  signTransaction: Function,
+  sign:Function,
 }
 
 class Wallet {

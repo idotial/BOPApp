@@ -71,6 +71,7 @@ export default class ImportAccount extends Component<Props, State> {
   }
 
   _finishEntering = (event: Object) => {
+    console.log(event.nativeEvent);
     var pressedKey = event.nativeEvent.key
     if (pressedKey == 'Enter') {
       this._importingAccount()
