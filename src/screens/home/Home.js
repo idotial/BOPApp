@@ -33,7 +33,7 @@ type State = {
   memric: string,
 }
 
-export default class Home extends Component < Props > {
+export default class Home extends Component < Props, State > {
   static navigationOptions = ({
     navigation
   }) => {
@@ -50,13 +50,33 @@ export default class Home extends Component < Props > {
   }
 
   sendRequest = async() => {
-    var response = await fetch(SERVER_ADDRESS, {credentials: 'include'})
-    console.log(response);
+    var response = await fetch(SERVER_ADDRESS + '/users', {credentials: 'same-origin'})
+    // console.log(Fetch);
   }
 
   getcookie = async() => {
-    var response = await fetch(SERVER_ADDRESS+'/users', {credentials: 'include'})
+    var response = await fetch(SERVER_ADDRESS, {credentials: 'same-origin'})
     console.log(response);
+  }
+
+  postSign = async() => {
+    var nonce = await fetch(SERVER_ADDRESS+'/users/getnonce', {credentials: 'same-origin'})
+    var tt = await nonce.json()
+    console.log(tt);
+    var send = JSON.stringify(wallet.signData(tt.nonce))
+    console.log(send);
+    // nonce.json().then(data => {console.log(data)})
+    // console.log((await nonce.body.getReader().read()));
+    // console.log();
+    await fetch(SERVER_ADDRESS+'/users/post', {
+      headers: {
+   　　　　 'Accept': 'application/json',
+   　　　　 'Content-Type': 'application/json',
+ 　　　　 },
+      credentials: 'same-origin',
+      method: 'post',
+      body: send,
+    })
   }
 
   render() {
@@ -66,6 +86,8 @@ export default class Home extends Component < Props > {
           onPress = {this.getcookie}/>
         <Button title = "send"
           onPress = {this.sendRequest}/>
+        <Button title = "sign"
+          onPress = {this.postSign}/>
         <Button title = "clear data"
           onPress = {
             () => {
