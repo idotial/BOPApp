@@ -15,7 +15,10 @@ import * as Keychain from 'react-native-keychain';
 export default class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
-    this._bootstrapAsync();
+  }
+
+  componentDidMount = () => {
+    this._bootstrapAsync()
   }
 
   _bootstrapAsync = async() => {
@@ -32,14 +35,15 @@ export default class AuthLoadingScreen extends React.Component {
          this.props.navigation.navigate('Login')
        }
      } else {
-       try {
-         await storage.load({
-           key: 'currentUser',
-         })
-         this.props.navigation.navigate('Login')
-       } catch (e) {
-         this.props.navigation.navigate('Regist');
-       }
+       this.props.navigation.navigate('LoginSuccess');
+       // try {
+       //   await storage.load({
+       //     key: 'currentUser',
+       //   })
+       //   this.props.navigation.navigate('Login')
+       // } catch (e) {
+       //   this.props.navigation.navigate('Regist');
+       // }
      }
   };
 

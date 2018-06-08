@@ -9,7 +9,11 @@ import {
 export default class LoginSuccessScreen extends React.Component {
   constructor(props) {
     super(props);
-    this._bootstrap();
+    // this._bootstrap();
+  }
+
+  componentDidMount = () => {
+    this._bootstrap()
   }
 
   // Fetch the token from storage then navigate to our appropriate place

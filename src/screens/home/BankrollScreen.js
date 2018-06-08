@@ -7,9 +7,10 @@ import {
   TextInput,
   View
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PendingTransaction from './../../component/PendingTransaction'
 
-export default class DetailsScreen extends Component {
+export default class BankrollScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,17 +20,11 @@ export default class DetailsScreen extends Component {
       reulst: null,
     }
   }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Details',
-      headerLeft: (
-        <Button
-          onPress={() => navigation.navigate('MyModal')}
-          title="Info"
-          color="#fff"
-        />
-      ),
-    }
+  static navigationOptions = {
+    title: 'Bankroll',
+    tabBarIcon: ({focused, tintColor}) => (
+      <Icon name="wallet" size={focused? 35: 25} color={tintColor} />
+    ),
   };
   render() {
     /* 2. Get the param, provide a fallback value if not available */

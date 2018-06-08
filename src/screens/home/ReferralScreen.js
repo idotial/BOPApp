@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
+import Entypo from 'react-native-vector-icons/Entypo';
 import {wordlists} from 'bip39';
 import { wallet } from './../../eth/wallet'
 
@@ -23,7 +24,14 @@ type State = {
   modalVisible: boolean,
 }
 
-export default class UserInfo extends Component<Props, State> {
+export default class ReferralScreen extends Component<Props, State> {
+  static navigationOptions = {
+      title: 'Referral',
+      tabBarIcon: ({focused, tintColor}) => (
+        <Entypo name="add-user" size={focused? 35: 25} color={tintColor} />
+      ),
+  };
+
   state = {
     input: '',
     language: 'english',

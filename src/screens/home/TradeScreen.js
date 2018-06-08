@@ -5,25 +5,31 @@ import React, {
 from 'react';
 import {
   Button,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
   View,
 }
 from 'react-native';
+import * as Keychain from 'react-native-keychain'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { VictoryLine, VictoryChart, VictoryTheme} from "victory-native";
 import {storage} from '../../config/storage';
 import { SERVER_ADDRESS } from '../../config/constants/config';
-import * as Keychain from 'react-native-keychain'
 import {wallet} from '../../eth/wallet';
+import CommonHeader from '../../component/CommonHeader';
 // import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const data = [
+
+  { quarter: 7, earnings: 17000 },
+  { quarter: 4, earnings: 19000 },
+  { quarter: 6, earnings: 15000 },
+  { quarter: 1, earnings: 17000 },
+  { quarter: 5, earnings: 12000 },
+  { quarter: 2, earnings: 16500 },
+  { quarter: 3, earnings: 14250 },
+];
 
 type Props = {};
 
@@ -33,14 +39,12 @@ type State = {
   memric: string,
 }
 
-export default class Home extends Component < Props, State > {
-  static navigationOptions = ({
-    navigation
-  }) => {
-    // console.log(navigation);
-    return {
+export default class TradeScreen extends Component < Props, State > {
+  static navigationOptions = {
       title: 'Home',
-    }
+      tabBarIcon: ({focused, tintColor}) => (
+        <Entypo name="swap" size={focused? 35: 25} color={tintColor} />
+      ),
   };
 
   state = {
@@ -82,25 +86,17 @@ export default class Home extends Component < Props, State > {
   render() {
     return (
       <View style ={styles.container}>
-        <Button title = "login"
-          onPress = {this.getcookie}/>
-        <Button title = "send"
-          onPress = {this.sendRequest}/>
-        <Button title = "sign"
-          onPress = {this.postSign}/>
-        <Button title = "clear data"
-          onPress = {
-            () => {
-              storage.remove({
-                key: 'currentUser',
-              });
-              Keychain.resetInternetCredentials('BOP.account.' + wallet.account.address)
-              this.props.navigation.navigate('AuthLoading');
-              /* 1. Navigate to the Details route with params */
-              // this.props.navigation.navigate('Auth');
-            }
-          }
-        />
+        <CommonHeader />
+        <VictoryChart
+          theme={VictoryTheme.material}
+        >
+          <VictoryLine
+            style={{
+              data: { stroke: "#c43a31" },
+              parent: { border: "1px solid #ccc"}
+            }}
+            data={data} x="quarter" y="earnings" />
+        </VictoryChart>
       </View>
     );
   }
@@ -109,8 +105,8 @@ export default class Home extends Component < Props, State > {
 const styles = StyleSheet.create({
   container:{
     flex: 1,
-    backgroundColor: 'purple',
-    marginTop: 140,
+    backgroundColor: 'white',
+    // marginTop: 140,
   },
   textInput:{
     fontSize: 14,
@@ -124,3 +120,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
 })
+
+// <Button title = "login"
+//  onPress = {this.getcookie}/>
+//  <Button title = "send"
+//    onPress = {this.sendRequest}/>
+  // <Button title = "sign"
+  //   onPress = {this.postSign}/>
+  // <Button title = "clear data"
+  //   onPress = {
+  //     () => {
+  //       storage.remove({
+  //         key: 'currentUser',
+  //       });
+  //       Keychain.resetInternetCredentials('BOP.account.' + wallet.account.address)
+  //       this.props.navigation.navigate('AuthLoading');
+  //       /* 1. Navigate to the Details route with params */
+  //       // this.props.navigation.navigate('Auth');
+      // }
+    // }
+  // />
