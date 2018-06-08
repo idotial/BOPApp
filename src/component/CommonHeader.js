@@ -1,41 +1,59 @@
 //@flow
 import React, { Component } from 'react';
-import {
-    Text,
-    View,
-    StyleSheet,
-}
-from 'react-native';
+import { Header, Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/Ionicons'
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 
-export default class CommonHeader extends Component {
+type Props = {
+  title: string,
+  pressLeftButton: Function,
+  pressRightButton: Function,
+}
+
+export default class CommonHeader extends React.Component<Props> {
+  renderLeftIcon = () => {
+    if (this.props.pressLeftButton) {
+      return (
+            <Icon
+              name='md-arrow-back'
+              size={25}
+              color='white'
+              onPress={this.props.pressLeftButton}
+            />
+          )
+        }
+      }
+
+      renderRightIcon = () => {
+        if (this.props.pressRightButton) {
+          return (
+            <SimpleLineIcons
+              name='question'
+              size={25}
+              color='white'
+              onPress={this.props.pressRightButton}
+            />
+          )
+        }
+      }
+
+
     render() {
         return (
-                <View style={styles.container}>
-                    <View style={styles.textview}>
-                        <Text style={styles.textstyle}>{this.props.text || "标题头"}</Text>
-                    </View>
-                </View>
-        );
-    }
+                <Header
+                  backgroundColor = '#212121'
+                  leftComponent = { this.renderLeftIcon() }
+                  centerComponent={{ text: 'Trade', style: { color: '#ffffff'}}}
+                  rightComponent = { this.renderRightIcon() }
+                />
+                );
+            }
 }
 
-
-const styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 45,
-        alignSelf: 'stretch',
-        backgroundColor: '#212121',
-        marginTop: 20,
-    },
-    textview: {
-        flex: 1,
-        alignSelf: 'center',
-    },
-    textstyle: {
-        fontSize: 18,
-        color: '#fff',
-        textAlign: 'center',
-    },
-});
+// leftComponent={<Button
+//   Icon={
+//     name='md-arrow-back'
+//     size={15}
+//     color='white'
+//   }
+//   }
