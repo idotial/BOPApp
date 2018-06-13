@@ -1,6 +1,6 @@
 //@flow
 class ServerConnection {
-  cookieExpireAt: 
+  cookieExpireAt: number
   _getRequest = async(url: string): Promise<any> => {
     var response = await fetch(url, {
       credentials: 'same-origin',

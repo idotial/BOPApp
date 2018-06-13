@@ -2,12 +2,13 @@
 import {
   Alert,
   ActivityIndicator,
+  Button,
   Modal,
   StyleSheet,
   View,
   Text,
   TextInput,
-  Button,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React, {Component} from 'react';
 import { contractHelper } from './../eth/contract'
@@ -72,7 +73,7 @@ export default class PendingTransaction extends Modal<Props, State> {
 
   render(){
     return (
-      <View>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.field}>
           <Text style={styles.label}>from</Text>
           <Text
@@ -99,7 +100,7 @@ export default class PendingTransaction extends Modal<Props, State> {
           <Button title='cancel' onPress={ this.props.transactionDidCancel} disabled={this.state.isLoading} />
         </View>
 
-      </View>
+      </TouchableWithoutFeedback>
         )
       }
 }

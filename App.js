@@ -7,8 +7,8 @@
 import './src/config/storage';
 import './src/config/eth';
 
-import AppTab from './src/screens/AppTab';
-import AuthSwitch from './src/screens/AuthSwitch';
+import AppTab from './src/navigations/AppTab';
+import AuthSwitch from './src/navigations/AuthSwitch';
 import React, {Component} from 'react';
 import { createSwitchNavigator } from 'react-navigation';
 

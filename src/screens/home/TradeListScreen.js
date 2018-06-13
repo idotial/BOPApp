@@ -7,7 +7,7 @@ import {
   TextInput,
   View
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import PendingTransaction from './../../component/PendingTransaction'
 
 export default class TradeListScreen extends Component {
@@ -20,12 +20,16 @@ export default class TradeListScreen extends Component {
       reulst: null,
     }
   }
-  static navigationOptions = {
-      title: 'TradeList',
-      tabBarIcon: ({focused, tintColor}) => (
-        <Icon name="md-list-box" size={focused? 35: 25} color={tintColor} />
-      ),
-  };
+  static navigationOptions = ({navigation}) => ({
+    headerRight:
+    <SimpleLineIcons
+      name='question'
+      size={25}
+      color='white'
+      style={{paddingRight: 18}}
+      onPress={() => {navigation.navigate('HelpTrade')}}
+    />,
+  });
   // static navigationOptions = ({ navigation }) => {
   //   return {
   //     title: 'Details',
