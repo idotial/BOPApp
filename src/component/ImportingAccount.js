@@ -1,14 +1,18 @@
 //@flow
 import React, {Component} from 'react';
 import {
-  Button,
+  Alert,
+  // Button,
+  Keyboard,
   Modal,
-  Picker,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native'
+import {ButtonGroup, Button} from 'react-native-elements';
 import {wallet} from '../eth/wallet';
 
 type Props = {
@@ -17,19 +21,21 @@ type Props = {
 }
 
 type State = {
-  importType:string,
+  selectedIndex: number,
   password: string,
+  repeatPassword: string,
   importData:string,
-  test: string,
 }
 
 export default class ImportAccount extends Component<Props, State> {
   state = {
-    importType: 'mnemonic',
+    selectedIndex: 0,
     password: '',
+    repeatPassword: '',
     importData: '',
-    test: '',
   }
+
+  importArray = ['Mnemonic','KeyStore','privateKey']
 
   componentDidMount = () => {
     console.log('ImportAccountModal componentDidMount');
@@ -40,70 +46,111 @@ export default class ImportAccount extends Component<Props, State> {
   }
 
   _importingAccount = () => {
-    var newKeystore = ''
-    switch (this.state.importType) {
-      case 'keystore':
-        wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
-        newKeystore = JSON.parse(this.state.importData)
-        break;
-      case 'privateKey':
-        newKeystore = wallet.importAccountFromPrivateKey(this.state.importData, this.state.password)
-        break;
-      default:
-        newKeystore = wallet.importAccountFromMnemonic(this.state.importData, this.state.password)
+    var newKeystore = {}
+    if (this.state.password.length > 8) {
+      switch (this.state.selectedIndex) {
+        case 1:
+        console.log(this.state.importData, this.state.password);
+          wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
+          newKeystore = JSON.parse(this.state.importData)
+          break;
+        case 2:
+          if (this.state.password == this.state.repeatPassword) {
+            console.log(this.state.importData, this.state.password);
+            newKeystore = wallet.importAccountFromPrivateKey(this.state.importData, this.state.password)
+          } else {
+            Alert.alert('two passwords are different')
+          }
+          break;
+        default:
+          if (this.state.password == this.state.repeatPassword) {
+            console.log(this.state.importData, this.state.password);
+            newKeystore = wallet.importAccountFromMnemonic(this.state.importData, this.state.password)
+          } else {
+            Alert.alert('two passwords are different')
+          }
+      }
+      this.props.importDidSuccess(newKeystore)
+    } else {
+      Alert.alert('password too short')
     }
-    this.props.importDidSuccess(newKeystore)
   }
 
   importTypeString = () => {
-    var typeName = ''
-    switch (this.state.importType) {
-      case 'keystore':
-        typeName = 'keystore导入'
-        break;
-      case 'privateKey':
-        typeName = '私钥导入'
-        break;
+    switch (this.state.selectedIndex) {
+      case 1:
+        return 'keystore'
+      case 2:
+        return 'private key'
       default:
-        typeName = '助记词导入'
+        return 'mnemonic'
     }
-    return typeName
+  }
+
+  updateImportType = (selectedIndex: number) => {
+    if (this.state.selectedIndex != selectedIndex) {
+      this.setState({selectedIndex})
+      this.setState({importData: ''})
+    }
   }
 
   _finishEntering = (event: Object) => {
-    console.log(event.nativeEvent);
-    var pressedKey = event.nativeEvent.key
-    if (pressedKey == 'Enter') {
+    if (event.nativeEvent.key == 'Enter') {
       this._importingAccount()
     }
   }
 
   render() {
     return (
-        <View style={styles.container}>
-          <View>
-            <TextInput style={styles.title} value={this.importTypeString()} />
-            <TextInput style={styles.title} value={this.state.test} />
-            <TextInput autoCorrect={false} placeholder={'请输入密码'} value={this.state.password} onChangeText={(password) => {this.setState({password})}} />
-            <TextInput autoCorrect={false} onKeyPress={this._finishEntering} returnKeyType='go' placeholder={'请输入'+this.state.importType} value={this.state.importData} onChangeText={(importData) => {this.setState({importData})}} />
-            <Picker
-              selectedValue={this.state.importType}
-              style={{ height: 40}}
-              onValueChange={(itemValue, itemIndex) => {
-                this.setState({importType: itemValue})
-                this.state.importData = ''
-              }}>
-              <Picker.Item label="助记词导入" value="mnemonic" />
-              <Picker.Item label="keystore导入" value='keystore' />
-              <Picker.Item label="私钥导入" value="privateKey" />
-            </Picker>
-          </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.container}  >
+            <ButtonGroup
+              onPress={this.updateImportType}
+              selectedIndex={this.state.selectedIndex}
+              buttons={this.importArray}
+              buttonStyle={styles.headButtonStyle} selectedButtonStyle={styles.selectedHeadButtonStyle}
+              textStyle={styles.headButtonTextStyle} selectedTextStyle={styles.selectedHeadButtonTextStyle}
+              containerStyle={{height: 60}}
+            />
+            <View style={{flex: 1, alignItems: 'center', justifyContent:'space-evenly'}}>
+              <ScrollView
+                centerContent
+                contentContainerStyle ={{height: 100}}
+                keyboardDismissMode='on-drag'
+              >
+                <TextInput style={styles.input}
+                  autoCapitalize='none' autoCorrect={false}
+                  multiline={true}
+                  onKeyPress={this._finishEntering} returnKeyType='go' blurOnSubmit={true}
+                  mutip
+                  placeholder={'please input '+this.importTypeString()} value={this.state.importData}
+                  onChangeText={(importData) => {this.setState({importData})}}
+                />
+              </ScrollView>
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.input}
+                  autoCapitalize='none' autoCorrect={false} secureTextEntry={this.state.selectedIndex!=1}
+                  placeholder={'please input password(at lease 8 letter)'} value={this.state.password}
+                  onChangeText={(password) => {this.setState({password})}}
+                />
+                {this.state.selectedIndex!=1 && (
+                  <TextInput
+                    style={styles.input}
+                    autoCapitalize='none' autoCorrect={false} secureTextEntry={true}
+                    placeholder={'please repeat password'} value={this.state.repeatPassword}
+                    onChangeText={(repeatPassword) => {this.setState({repeatPassword})}}
+                  />
+                )}
+              </View>
+              <View style={styles.buttons}>
+                <Button title='import' onPress={this._importingAccount} />
+                <Button title='cancel' onPress={this.props.importCancel} />
+              </View>
+            </View>
 
-          <View style={styles.buttons}>
-            <Button title='确认' onPress={this._importingAccount} />
-            <Button title='取消' onPress={this.props.importCancel} />
           </View>
-        </View>
+        </TouchableWithoutFeedback>
     )
   }
 
@@ -111,21 +158,47 @@ export default class ImportAccount extends Component<Props, State> {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: '#240bed',
+    backgroundColor: '#333333',
+  },
+  headButtonStyle: {
+    backgroundColor: '#212121',
+  },
+  headButtonTextStyle: {
+    color: '#DDDDDD',
+  },
+  selectedHeadButtonTextStyle: {
+    color: '#1E080B',
+  },
+  selectedHeadButtonStyle: {
+    backgroundColor: '#EDB000',
   },
   input:{
-    borderLeftWidth:20,
+    backgroundColor: 'white',
+    fontSize: 16,
+    width: 260,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 10,
+  },
+  passwordContainer: {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent:'space-around'
   },
   title: {
     fontSize: 28,
     textAlign: 'center',
-    color: '#313131',
+    color: '#ffffff',
     marginTop: 30,
   },
   buttons: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 400,
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
 })

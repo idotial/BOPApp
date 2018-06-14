@@ -1,10 +1,10 @@
 /* @flow */
-import React, {
-  Component
-}
+import
+React,
+{Component}
 from 'react';
 import {
-  Button,
+  Alert,
   Keyboard,
   ScrollView,
   StyleSheet,
@@ -20,21 +20,11 @@ import ScrollableItemsGroup from '../../component/ScrollableItemsGroup';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {CheckBox, Button} from 'react-native-elements';
 import {storage} from '../../config/storage';
-import { SERVER_ADDRESS } from '../../config/constants/config';
+import {serverConnection} from '../../config/ServerConnection';
 import {wallet} from '../../eth/wallet';
 import FIFORing from '../../utils/FixedFIFOArray';
-// import {getPrivateKey, createAccountInRandomBuffer} from './../../eth/wallet';
-
-// const data = new FIFORing([], 20);
-
-// [  { quarter: 7, earnings: 17000 },
-//   { quarter: 4, earnings: 19000 },
-//   { quarter: 6, earnings: 15000 },
-//   { quarter: 1, earnings: 17000 },
-//   { quarter: 5, earnings: 12000 },
-//   { quarter: 2, earnings: 16500 },
-//   { quarter: 3, earnings: 14250 },]
 
 type Props = {};
 
@@ -46,7 +36,8 @@ type State = {
   coinMap: {string: number},
   timeType: number,
   timeMap: {string: number},
-  selectedIndex: number,
+  // payOutMap:{number: {number: number}},
+  selectedTrend: number,
 }
 
 export default class TradeScreen extends Component <Props, State> {
@@ -69,12 +60,12 @@ export default class TradeScreen extends Component <Props, State> {
 
   state = {
     amount: 0,
-    selectedIndex: 0,
+    selectedTrend: 0,
     coinType: 0,
     coinMap: new Map([
-      ['BTC', 0],
-      ['ETH', 1],
-      ['LTC', 2],
+      ['BTC/USD', 0],
+      ['ETH/USD', 1],
+      ['LTC/USD', 2],
     ]),
     timeType: 30,
     timeMap: new Map([
@@ -87,7 +78,6 @@ export default class TradeScreen extends Component <Props, State> {
   }
 
   componentDidMount = () => {
-    // console.log('componentDidMount');
     this.dataSource = setInterval(this.getMarketData, 1000)
   }
 
@@ -130,6 +120,13 @@ export default class TradeScreen extends Component <Props, State> {
 
   changeTimeType = (keyStr: string) => {
     this.setState({timeType: this.state.timeMap.get(keyStr)})
+  }
+
+  makeBet = () => {
+    if(this.state.amount && this.state.selectedTrend) {
+      return Alert.alert('send bet', this.state.coinType+' '+this.state.timeType+' '+this.state.amount+' '+this.state.selectedTrend)
+    }
+    return Alert.alert('send fall')
   }
 
 
@@ -221,7 +218,7 @@ export default class TradeScreen extends Component <Props, State> {
               dependentAxis
               style={{
                 grid: {stroke: 'white'},
-                tickLabels: {padding: 5, fill:'#ffffff'},
+                tickLabels: {padding: 1, fill:'#ffffff'},
               }}
             />
             {this.state.marketData.length > 1 && (<VictoryLine
@@ -245,6 +242,40 @@ export default class TradeScreen extends Component <Props, State> {
             style={styles.amountInput}
             onChangeText={(amount) => {this.setState({amount})}}/>
         </View>
+        <View style={styles.bottomButtonsArea}>
+          <View style={styles.checkBoxAreaView}>
+            <CheckBox
+              center
+              title='height'
+              containerStyle = {[styles.checkBoxContainer, styles.backgroundColorGreen]}
+              checked={this.state.selectedTrend==1}
+              onPress={() => this.setState({selectedTrend: 1})}
+            />
+            <CheckBox
+              center
+              title='low'
+              containerStyle = {[styles.checkBoxContainer, styles.backgroundColorOrange]}
+              checked={this.state.selectedTrend==2}
+              onPress={() => this.setState({selectedTrend: 2})}
+            />
+          </View>
+          <View style={styles.investButtonContainer}>
+            <Button
+              buttonStyle={styles.investButton}
+              component={{marginRight: 0}}
+              title='invest'
+              onPress={this.makeBet}
+            />
+          </View>
+        </View>
+        <Text style={styles.rightText}>
+          <Text style={{color: '#FFFFFF'}}>Payout: </Text>
+          <Text style={{color: '#FF5C00'}}>${
+            this.state.amount && this.state.selectedTrend && (
+              this.state.amount * 1.75
+            )
+          }</Text>
+        </Text>
       </View>
     </TouchableWithoutFeedback>
     );
@@ -259,7 +290,7 @@ const styles = StyleSheet.create({
   },
   noteView: {
     backgroundColor: '#0E0E0E',
-    height: 45,
+    height: 30,
     justifyContent: 'center',
   },
   buttonGroupContainer: {
@@ -271,7 +302,7 @@ const styles = StyleSheet.create({
   },
   chartHeaderView: {
     width:350,
-    height: 39,
+    height: 30,
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
@@ -287,6 +318,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
+  chartAreaView: {
+    width:360,
+    alignSelf: 'center',
+  },
   amountInputAreaView: {
     backgroundColor: '#363636',
     flexDirection: 'row',
@@ -298,24 +333,60 @@ const styles = StyleSheet.create({
     paddingLeft: 17,
   },
   amountInput: {
-    fontSize: 16,
+    fontSize: 17,
+    paddingLeft: 4,
+    paddingBottom: 2,
     flex: 1,
     color: 'white',
   },
-  chartAreaView: {
-    width:360,
-    alignSelf: 'center',
-    // paddingLeft: 21,
-    // paddingRight: 21,
-  },
   textInput:{
     fontSize: 14,
+  },
+  bottomButtonsArea: {
+    width:360,
+    height: 85,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  checkBoxAreaView: {
+    flex: 1,
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
+    paddingRight: 5,
+  },
+  checkBoxContainer: {
+    margin: 0,
+    marginLeft: 0,
+    padding: 6
+  },
+  investButtonContainer: {
+    flex: 1,
+    alignItems: 'stretch',
+    justifyContent: 'center',
+  },
+  investButton: {
+    height: 83,
+    backgroundColor:'#EDB000'
   },
   edit: {
     marginTop: 30,
     height:40,
     fontSize:20,
     backgroundColor: '#fff',
+  },
+  rightText: {
+    marginTop: 10,
+    alignSelf:'flex-end',
+    width: 160,
+    fontSize: 14,
+  },
+  backgroundColorGreen: {
+    backgroundColor: '#8BC34A',
+  },
+  backgroundColorOrange: {
+    backgroundColor: '#FF5C00',
   },
 })
 

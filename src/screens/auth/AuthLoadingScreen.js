@@ -23,19 +23,11 @@ export default class AuthLoadingScreen extends React.Component {
 
   _bootstrapAsync = async() => {
      if (wallet.isAlive()) {
-       try {
-         // var nonce = await fetch(SERVER_ADDRESS, {credentials: 'include'}).toString()
-         // await fetch(SERVER_ADDRESS, {
-         //   credentials: 'include',
-         //   method: 'POST',
-         //   body: JSON.stringify(wallet.signData(nonce))
-         this.props.navigation.navigate('LoginSuccess');
-       } catch (e) {
-         Alert.alert('服务器验证失败', e)
-         this.props.navigation.navigate('Login')
-       }
+       this.props.navigation.navigate('Regist');
+       // this.props.navigation.navigate('LoginSuccess');
      } else {
-       this.props.navigation.navigate('LoginSuccess');
+       // this.props.navigation.navigate('LoginSuccess');
+       this.props.navigation.navigate('Regist');
        // try {
        //   await storage.load({
        //     key: 'currentUser',
@@ -56,3 +48,4 @@ export default class AuthLoadingScreen extends React.Component {
     );
   }
 }
+//

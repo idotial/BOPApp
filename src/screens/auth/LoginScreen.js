@@ -59,9 +59,9 @@ export default class LoginScreen extends React.Component<Props, State> {
       // var keystone = JSON.stringify(wallet.generateKeystore('0xa1e95324f2284a1a944ebd0f49cd1aa8d4931f2e19ef51effe83e3c36d63001c', '123456'))
       // console.log(keystone);
       // await Keychain.setInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', keystone, {accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE})
-      var keystore = (await Keychain.getInternetCredentials('BOP.account.'+this.state.currentAddr)).password
+      var keystore = (await Keychain.getGenericPassword()).password
       if (!keystore) {
-        Alert.alert('登录失败', 'keystore不存在')
+        Alert.alert('登录失败', '无可用keystore')
       }
       await wallet.importAccountFromKeyStore(keystore, this.state.pwd)
       this.props.navigation.navigate('AuthLoading');
