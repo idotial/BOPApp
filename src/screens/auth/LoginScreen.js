@@ -2,35 +2,44 @@
 import React, {Component} from 'react';
 import {
   Alert,
-  View,
-  Button,
+  Dimensions,
+  Image,
   StyleSheet,
+  Text,
   TextInput,
+  View,
 } from 'react-native';
+import {Button} from 'react-native-elements';
 import {wallet} from './../../eth/wallet'
 import * as Keychain from 'react-native-keychain'
 import {storage} from '../../config/storage';
+import I18n from '../../i18n/i18n';
+
+console.log(I18n);
 
 type Props = {}
 
 type State = {
   currentAddr: string,
   pwd: string,
-  loginable: boolean,
+  isLogining: boolean,
 }
+
+const {height, width} = Dimensions.get('window')
 
 export default class LoginScreen extends React.Component<Props, State> {
   static navigationOptions = {
-    title: 'Please sign in',
+    title: I18n.t('auth.login.title'),
   };
 
   state = {
     currentAddr: '',
     pwd: '',
-    loginable: true,
+    isLogining: false,
   }
 
   componentDidMount = async () => {
+    console.log(I18n);
     try {
       var addr = (await storage.load({
         key: 'currentUser',
@@ -41,44 +50,111 @@ export default class LoginScreen extends React.Component<Props, State> {
       }
       this.state.currentAddr = addr
     } catch (e) {
-      this.state.loginable = false
+      console.log(e);
     }
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <TextInput placeholder='请输入你的keystore解锁密码' value={this.state.pwd} onChangeText={(pwd) => {this.setState({pwd})}} />
-        <Button title="Sign in!" disabled={!this.state.loginable} onPress={this._signInAsync} />
+      <View>
+        <Image
+          resizeMode='cover'
+          source={require('../../../asset/img/bj.png')}
+          style={StyleSheet.absoluteFill}
+        />
+        <View style={styles.titleContainer}>
+          <Text>
+            <Text style={[styles.whiteText, styles.title]}>Block</Text>
+            <Text style={[styles.yellowText, styles.title]}>option</Text>
+          </Text>
+          <Text style={styles.subTitle}>{I18n.t('auth.login.subTitle')}</Text>
+        </View>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            autoFocus
+            style={styles.input}
+            autoCapitalize='none' autoCorrect={false}
+            placeholder={I18n.t('auth.login.enterPassword')} value={this.state.pwd}
+            onChangeText={(pwd) => {this.setState({pwd})}}
+          />
+          <Button
+            raised
+            rounded
+            component={{padding: 0}}
+            backgroundColor='#FFBD00'
+            color='#212121'
+            title={this.state.isLogining ? '': I18n.t('auth.login.login')}
+            loading={this.state.isLogining}
+            disable={this.state.isLogining}
+            containerViewStyle={styles.buttonContainer}
+            onPress={this._signInAsync}
+          />
+        </View>
       </View>
     );
   }
 
   _signInAsync = async () => {
     if (this.state.currentAddr) {
-      // var keystone = JSON.stringify(wallet.generateKeystore('0xa1e95324f2284a1a944ebd0f49cd1aa8d4931f2e19ef51effe83e3c36d63001c', '123456'))
-      // console.log(keystone);
-      // await Keychain.setInternetCredentials('BOP.account.0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', '0xa984D0105f4fb5080F9EB282a53EC0C0bC6c1Cb5', keystone, {accessControl: Keychain.ACCESS_CONTROL.USER_PRESENCE})
+      this.setState({isLogining: true})
       var keystore = (await Keychain.getGenericPassword()).password
       if (!keystore) {
-        Alert.alert('登录失败', '无可用keystore')
+        Alert.alert(I18n.t('auth.login.loginFail'), I18n.t('auth.login.failForInvalidKeystore'))
       }
-      await wallet.importAccountFromKeyStore(keystore, this.state.pwd)
-      this.props.navigation.navigate('AuthLoading');
+      try {
+        await wallet.importAccountFromKeyStore(keystore, this.state.pwd)
+        this.props.navigation.navigate('AuthLoading');
+      } catch (e) {
+        Alert.alert(e)
+        this.setState({isLogining: false})
+      }
     }
-
   };
-
-  _registAsync = async () => {
-
-  }
-
 }
 
 
 
 const styles = StyleSheet.create({
-  container:{
-    paddingTop:30,
+  titleContainer: {
+    marginTop: height * 0.2,
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  whiteText: {
+    color: '#FFFFFF',
+  },
+  yellowText: {
+    color: '#FFBD00',
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
+  },
+  subTitle: {
+    fontSize: 17,
+    color: '#AAAAAA',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'space-around',
+    marginTop: height * 0.1,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  buttonContainer: {
+    justifyContent: 'center',
+    marginLeft: 0,
+    marginRight: 0,
+  },
+  input:{
+    backgroundColor: 'white',
+    fontSize: 16,
+    width: width * 0.7,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 10,
   },
 })

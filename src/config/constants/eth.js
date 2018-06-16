@@ -1,6 +1,7 @@
 const CONTRACT_ADDRESS = '0x219607bb1b7239eddd7331ce76ab7835718c183a'
 
 const RPC_PROVIDER = 'HTTP://localhost:7545'
+// const RPC_PROVIDER = 'ws://localhost:7545'
 
 const CONTRACT_ABI = [
 	{

@@ -21,6 +21,7 @@ class Wallet {
   }
 
   createAccountWithMnemonic = (password: string, language: string = 'english') => {
+    console.log(password);
     var mnemonic = bip39.generateMnemonic(null, null, bip39.wordlists[language]) //判断是否中文相关支持
     var keystore = this.importAccountFromMnemonic(mnemonic, password, language)
     return {mnemonic, keystore}

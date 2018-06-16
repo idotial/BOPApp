@@ -15,6 +15,7 @@ import CreateAccount from '../../component/CreateAccount';
 import {wallet} from './../../eth/wallet'
 import * as Keychain from 'react-native-keychain'
 import { storage } from '../../config/storage';
+import I18n from '../../i18n/i18n';
 
 type State = {
   modalState: number,
@@ -58,7 +59,7 @@ export default class RegistScreen extends React.Component<Prop, State> {
       this._quitModal()
       this.props.navigation.navigate('AuthLoading')
     } catch (e) {
-      Alert.alert('Keystore存储失败, 请不要使用这个账户', '可复制以下信息发送给客户处理此问题: ' + e)
+      Alert.alert(I18n.t('auth.regist.keystoreFailInStore'), e)
     }
   }
 
@@ -76,13 +77,13 @@ export default class RegistScreen extends React.Component<Prop, State> {
                   onPress={this._showCreateModal}
                 />
                 <Badge
-                  value='create account'
+                  value={I18n.t('auth.regist.createAccount')}
                   textStyle={styles.descText}
                   containerStyle={styles.descBadgeContainer}
                   wrapperStyle={styles.descBadgeWrapper}
                 />
                 <Modal animationType='slide' visible={this.state.modalState == 1? true: false}>
-                  <CreateAccount importCancel={this._quitModal} importDidSuccess={this._storeAccount}/>
+                  <CreateAccount createCancel={this._quitModal} createDidSuccess={this._storeAccount}/>
                 </Modal>
               </View>
               <Divider style={{height: 1, width: 264, backgroundColor: '#111111'}} />
@@ -96,7 +97,7 @@ export default class RegistScreen extends React.Component<Prop, State> {
                   onPress={this._showImportModal}
                 />
                 <Badge
-                  value='import account'
+                  value={I18n.t('auth.regist.importAccount')}
                   textStyle={styles.descText}
                   containerStyle={styles.descBadgeContainer}
                   wrapperStyle={styles.descBadgeWrapper}

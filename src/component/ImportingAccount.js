@@ -37,14 +37,6 @@ export default class ImportAccount extends Component<Props, State> {
 
   importArray = ['Mnemonic','KeyStore','privateKey']
 
-  componentDidMount = () => {
-    console.log('ImportAccountModal componentDidMount');
-  }
-
-  componentWillUnmount = () => {
-    console.log('ImportAccountModal componentWillUnmount');
-  }
-
   _importingAccount = () => {
     var newKeystore = {}
     if (this.state.password.length > 8) {
