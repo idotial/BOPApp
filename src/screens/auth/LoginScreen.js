@@ -72,6 +72,7 @@ export default class LoginScreen extends React.Component<Props, State> {
         <View style={styles.passwordContainer}>
           <TextInput
             autoFocus
+            secureTextEntry
             style={styles.input}
             autoCapitalize='none' autoCorrect={false}
             placeholder={I18n.t('auth.login.enterPassword')} value={this.state.pwd}
@@ -105,7 +106,7 @@ export default class LoginScreen extends React.Component<Props, State> {
         await wallet.importAccountFromKeyStore(keystore, this.state.pwd)
         this.props.navigation.navigate('AuthLoading');
       } catch (e) {
-        Alert.alert(e)
+        Alert.alert(I18n.t('auth.login.wrongPassword'))
         this.setState({isLogining: false})
       }
     }

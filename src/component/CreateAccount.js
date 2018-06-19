@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 import {Button} from 'react-native-elements';
 import {wallet} from '../eth/wallet';
+import I18n from '../i18n/i18n';
 
 type Props = {
   createDidSuccess: Function,
@@ -18,6 +19,7 @@ type Props = {
 
 type State = {
   password: string,
+  repeatPassword: string,
   createState: number,
   mnemonic: string,
   keystore: Object,
@@ -28,6 +30,7 @@ var {height, width} = Dimensions.get('window')
 export default class CreateAccount extends React.Component<Props, State> {
   state = {
     password: '',
+    repeatPassword: '',
     createState: 0,
     mnemonic: '',
     keystore: null,
@@ -44,25 +47,37 @@ export default class CreateAccount extends React.Component<Props, State> {
   createAccount = async() => {
     this.setState({createState: 1})
     if (this.state.password.length > 7) {
-      const pro = new Promise((resolve, reject) => {
-        var result = wallet.createAccountWithMnemonic(this.state.password)
+      if (this.state.password == this.state.repeatPassword) {
+        const pro = new Promise((resolve, reject) => {
+          var result = wallet.createAccountWithMnemonic(this.state.password)
+          try {
+            resolve(result)
+          } catch (e) {
+            reject(e)
+          }
+        })
         try {
-          resolve(result)
+          this.setState({createState:2})
+          var {keystore, mnemonic} = await pro
+          console.log(keystore);
+          console.log(mnemonic);
+          this.setState({keystore, mnemonic})
         } catch (e) {
-          reject(e)
+          this.setState({createState: 0})
+          Alert.alert(I18n.t('auth.regist.failInCreate'), e)
+          this.setState({repeatPassword: ''})
+          this.setState({password: ''})
         }
-      })
-      try {
-        var {keystore, mnemonic} = await pro
-        this.setState({keystore, mnemonic})
-        this.setState({createState:2})
-      } catch (e) {
+      } else {
+        Alert.alert(I18n.t('auth.regist.passwordRepeatWrong'))
+        this.setState({repeatPassword: ''})
         this.setState({createState: 0})
-        Alert.alert('账号生成失败', e)
       }
     } else {
       this.setState({createState: 0})
-      Alert.alert('Password too short', 'As lease 8 letter')
+      Alert.alert('auth.regist.passwordTooShort', 'auth.regist.password8Letter')
+      this.setState({repeatPassword: ''})
+      this.setState({password: ''})
     }
   }
 
@@ -79,36 +94,58 @@ export default class CreateAccount extends React.Component<Props, State> {
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.input}
+            secureTextEntry
             autoCapitalize='none' autoCorrect={false}
             placeholder={'input keystore password'} value={this.state.password}
             onChangeText={(password) => {this.setState({password})}}
           />
-          <Button
-            raised
-            rounded
-            outline
-            component={{padding: 0}}
-            containerViewStyle={styles.buttonContainer}
-            title={this.state.createState == 1 ? '': 'create'}
-            loading={this.state.createState==1}
-            disable={this.state.createState==1}
-            onPress={this.createAccount}
+          <TextInput
+            style={styles.input}
+            secureTextEntry
+            autoCapitalize='none' autoCorrect={false}
+            placeholder={'repeat keystore password'} value={this.state.repeatPassword}
+            onChangeText={(repeatPassword) => {this.setState({repeatPassword})}}
           />
-        </View>
-        <View style={styles.revealContainer}>
-          {this.state.mnemonic && (
-            <View style={styles.mnemonicContainer}>
-              <Text style={styles.attentionText}>please save the mnemonic below</Text>
-              <TextInput multiline editable={false} style={styles.mnemonicText}>{this.state.mnemonic}</TextInput>
-            </View>
+          {this.state.createState != 2 && (
+            <Button
+              raised
+              rounded
+              outline
+              component={{padding: 0}}
+              containerViewStyle={styles.buttonContainer}
+              title={this.state.createState == 1 ? '': 'create'}
+              loading={this.state.createState==1}
+              disable={this.state.createState==1}
+              onPress={this.createAccount}
+            />
           )}
         </View>
-        <View style={styles.bottomButtonsArea}>
-          {this.state.keystore && (
-            <Button title='finish' onPress={this.createDidFinished}/>
-          )}
-          <Button title='cancel' onPress={this.props.createCancel}/>
-        </View>
+        {this.state.mnemonic && (
+          <View style={styles.mnemonicContainer}>
+            <Text style={styles.attentionText}>please save the mnemonic below</Text>
+            <TextInput multiline editable={false} style={styles.mnemonicText}>{this.state.mnemonic}</TextInput>
+          </View>
+        )}
+        {this.state.keystore && (
+          <View style={styles.bottomButtonsArea}>
+            <Button
+              raised
+              rounded
+              outline
+              containerViewStyle={styles.buttonContainer}
+              title='finish'
+              onPress={this.createDidFinished}
+            />
+            <Button
+              raised
+              rounded
+              outline
+              containerViewStyle={styles.buttonContainer}
+              title='cancel'
+              onPress={this.props.createCancel}
+            />
+          </View>
+        )}
       </View>
     )
   }
@@ -142,7 +179,8 @@ const styles=StyleSheet.create({
     color: '#AAAAAA',
   },
   passwordContainer: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
+    height: height * 0.4,
     alignItems: 'center',
     justifyContent:'space-around',
     marginTop: 15,
@@ -153,7 +191,7 @@ const styles=StyleSheet.create({
     width: 100,
     height: 60,
     justifyContent: 'center',
-    marginLeft: 20,
+    marginLeft: 0,
     marginRight: 0,
   },
   input:{

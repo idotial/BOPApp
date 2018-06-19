@@ -13,7 +13,9 @@ import {Button} from 'react-native-elements';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PendingTransaction from './../../component/PendingTransaction'
+import * as Keychain from 'react-native-keychain';
 import {wallet} from '../../eth/wallet';
+import {storage} from '../../config/storage';
 import I18n from '../../i18n/i18n';
 
 type State = {
@@ -41,6 +43,20 @@ export default class SettingScreen extends Component {
     Alert.alert(I18n.t('common.copied'))
   }
 
+  exportAccount = async() => {
+    var keystore = (await Keychain.getGenericPassword()).password
+    this.props.navigation.navigate('ExportKeystore', {keystore: keystore})
+  }
+
+  deleteData = () => {
+    storage.remove({
+	     key: 'currentUser'
+    });
+    Keychain.resetGenericPassword();
+    wallet.clear()
+    this.props.navigation.navigate('AuthLoading')
+  }
+
   // state={}
 
   render() {
@@ -57,20 +73,20 @@ export default class SettingScreen extends Component {
         </View>
         <View style={styles.optionContainer}>
           <Button
-            title='check'
+            title='balance'
             backgroundColor='#363636'
+
           />
           <Button
             title='export'
             backgroundColor='#363636'
-          />
-          <Button
-            title='export'
-            backgroundColor='#363636'
+            onPress={this.exportAccount}
           />
           <Button
             title='delete'
+            color='red'
             backgroundColor='#363636'
+            onPress={this.deleteData}
           />
         </View>
       </View>

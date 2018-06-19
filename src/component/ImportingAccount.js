@@ -14,6 +14,7 @@ import {
 } from 'react-native'
 import {ButtonGroup, Button} from 'react-native-elements';
 import {wallet} from '../eth/wallet';
+import I18n from '../i18n/i18n';
 
 type Props = {
   importDidSuccess: Function,
@@ -37,21 +38,25 @@ export default class ImportAccount extends Component<Props, State> {
 
   importArray = ['Mnemonic','KeyStore','privateKey']
 
-  _importingAccount = () => {
+  _importingAccount = async() => {
     var newKeystore = {}
-    if (this.state.password.length > 8) {
+    if (this.state.password.length > 7) {
       switch (this.state.selectedIndex) {
         case 1:
-        console.log(this.state.importData, this.state.password);
-          wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
-          newKeystore = JSON.parse(this.state.importData)
+          console.log(this.state.importData, this.state.password);
+          try {
+            await wallet.importAccountFromKeyStore(this.state.importData, this.state.password)
+            newKeystore = JSON.parse(this.state.importData)
+          } catch (e) {
+            Alert.alert(I18n.t('auth.regist.keystorePasswordCheck'))
+          }
           break;
         case 2:
           if (this.state.password == this.state.repeatPassword) {
             console.log(this.state.importData, this.state.password);
             newKeystore = wallet.importAccountFromPrivateKey(this.state.importData, this.state.password)
           } else {
-            Alert.alert('two passwords are different')
+            Alert.alert(I18n.t('auth.regist.passwordRepeatWrong'))
           }
           break;
         default:
@@ -59,12 +64,14 @@ export default class ImportAccount extends Component<Props, State> {
             console.log(this.state.importData, this.state.password);
             newKeystore = wallet.importAccountFromMnemonic(this.state.importData, this.state.password)
           } else {
-            Alert.alert('two passwords are different')
+            Alert.alert(I18n.t('auth.regist.passwordRepeatWrong'))
           }
       }
-      this.props.importDidSuccess(newKeystore)
+      if (wallet.isAlive()) {
+        this.props.importDidSuccess(newKeystore)
+      }
     } else {
-      Alert.alert('password too short')
+      Alert.alert(I18n.t('auth.regist.password8Letter'))
     }
   }
 
@@ -114,22 +121,23 @@ export default class ImportAccount extends Component<Props, State> {
                   autoCapitalize='none' autoCorrect={false}
                   multiline={true}
                   onKeyPress={this._finishEntering} returnKeyType='go' blurOnSubmit={true}
-                  mutip
                   placeholder={'please input '+this.importTypeString()} value={this.state.importData}
                   onChangeText={(importData) => {this.setState({importData})}}
                 />
               </ScrollView>
               <View style={styles.passwordContainer}>
                 <TextInput
+                  secureTextEntry
                   style={styles.input}
-                  autoCapitalize='none' autoCorrect={false} secureTextEntry={this.state.selectedIndex!=1}
+                  autoCapitalize='none' autoCorrect={false}
                   placeholder={'please input password(at lease 8 letter)'} value={this.state.password}
                   onChangeText={(password) => {this.setState({password})}}
                 />
                 {this.state.selectedIndex!=1 && (
                   <TextInput
                     style={styles.input}
-                    autoCapitalize='none' autoCorrect={false} secureTextEntry={true}
+                    secureTextEntry
+                    autoCapitalize='none' autoCorrect={false}
                     placeholder={'please repeat password'} value={this.state.repeatPassword}
                     onChangeText={(repeatPassword) => {this.setState({repeatPassword})}}
                   />

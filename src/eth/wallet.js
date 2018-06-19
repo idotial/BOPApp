@@ -21,7 +21,6 @@ class Wallet {
   }
 
   createAccountWithMnemonic = (password: string, language: string = 'english') => {
-    console.log(password);
     var mnemonic = bip39.generateMnemonic(null, null, bip39.wordlists[language]) //判断是否中文相关支持
     var keystore = this.importAccountFromMnemonic(mnemonic, password, language)
     return {mnemonic, keystore}
@@ -39,7 +38,6 @@ class Wallet {
   importAccountFromMnemonic = (mnemonic: string, password:string, language: string ='english') => {
     if (bip39.validateMnemonic(mnemonic, bip39.wordlists[language])) {
       var privateKey = HDKey.fromMasterSeed(bip39.mnemonicToSeed(mnemonic)).privateKey.toString('hex')
-      console.log(privateKey);
       return this.importAccountFromPrivateKey(privateKey, password)
     } else {
       throw '无效助记词'
@@ -49,7 +47,12 @@ class Wallet {
   importAccountFromKeyStore = async(keystore: string, password:string) => {
     console.log(keystore);
     var keystoreObj = JSON.parse(keystore)
-    this.account = web3.eth.accounts.decrypt(keystoreObj, password)
+    console.log(keystoreObj);
+    try {
+      this.account = await web3.eth.accounts.decrypt(keystoreObj, password)
+    } catch (e) {
+      throw e
+    }
   }
 
   importAccountFromPrivateKey = (privateKey: string, password: string) => {
@@ -62,6 +65,10 @@ class Wallet {
 
   signData = (data: string) => {
     return this.account.sign(data)
+  }
+
+  clear = () => {
+    this.account = null
   }
 
 }

@@ -7,9 +7,12 @@ import {
 } from 'react-native';
 import SettingScreen from '../screens/home/SettingScreen';
 import HelpScreen from '../screens/home/HelpScreen';
+import ExportKeystoreScreen from '../screens/home/ExportKeystoreScreen';
+
 
 const SettingStack = createStackNavigator({
   Setting: SettingScreen,
+  ExportKeystore: ExportKeystoreScreen,
   Help: HelpScreen,
 },{
   initialRouteName: 'Setting',

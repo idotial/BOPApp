@@ -206,28 +206,33 @@ export default class TradeScreen extends Component <Props, State> {
             }
             theme={VictoryTheme.material}
           >
-            <VictoryAxis
-              style={{
-                grid: {stroke: 'none'},
-                tickLabels: {padding: 1, fill:'#ffffff'},
-              }}
-              tickValues={ this.state.dataTickValues.length > 4 ? this.state.dataTickValues : [this.state.dataTickValues[0] ? this.state.dataTickValues[0]: 0]}
-              tickFormat={(t) => this.getTimeFromTimeStamp(t)}
-            />
-            <VictoryAxis
-              dependentAxis
-              style={{
-                grid: {stroke: 'white'},
-                tickLabels: {padding: 1, fill:'#ffffff'},
-              }}
-            />
-            {this.state.marketData.length > 1 && (<VictoryLine
-              style={{
-                data: { stroke: "#fc8100", size: 6 },
-              }}
-              x="time"
-              y="price"
-              data={this.state.marketData} />
+            {this.state.dataTickValues.length > 1 && (
+              <VictoryAxis
+                style={{
+                  grid: {stroke: 'none'},
+                  tickLabels: {padding: 1, fill:'#ffffff'},
+                }}
+                tickValues={ this.state.dataTickValues.length > 4 ? this.state.dataTickValues : [this.state.dataTickValues[0] ? this.state.dataTickValues[0]: 0]}
+                tickFormat={(t) => this.getTimeFromTimeStamp(t)}
+              />
+            )}
+            {this.state.marketData.length > 1 && (
+              <VictoryAxis
+                dependentAxis
+                style={{
+                  grid: {stroke: 'white'},
+                  tickLabels: {padding: 1, fill:'#ffffff'},
+                }}
+              />
+            )}
+            {this.state.marketData.length > 1 && (
+              <VictoryLine
+                style={{
+                  data: { stroke: "#fc8100", size: 6 },
+                }}
+                x="time"
+                y="price"
+                data={this.state.marketData} />
             )}
           </VictoryChart>
         </View>
